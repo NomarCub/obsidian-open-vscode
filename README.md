@@ -1,6 +1,6 @@
 # Open in VSCode
 
-This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button to open your vault as a Visual Studio Code workspace.
+This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button and a command to open your vault as a Visual Studio Code workspace.
 
 You can use VSCode for various purposes with your vault, such as for git version control, markdown formatting with [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode), linting with [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint), [mass formatting files](https://marketplace.visualstudio.com/items?itemName=jbockle.jbockle-format-files) and more.
 
@@ -9,6 +9,9 @@ You can use VSCode for various purposes with your vault, such as for git version
 The icons work with light and dark mode.
 
 ![light and dark](https://user-images.githubusercontent.com/5298006/125868293-96c6f541-0604-4238-9fc3-05ff6c2e08df.gif)
+
+You can also use it as a command and assign hotkeys to it.
+![command](https://user-images.githubusercontent.com/5298006/125869408-d39d870b-ab4f-42d0-b915-b6abc1e617d5.png)
 
 ## Compatibility
 
