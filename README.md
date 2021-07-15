@@ -4,6 +4,12 @@ This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button to open y
 
 You can use VSCode for various purposes with your vault, such as for git version control, markdown formatting with [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode), linting with [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint), [mass formatting files](https://marketplace.visualstudio.com/items?itemName=jbockle.jbockle-format-files) and more.
 
+![video showcase](https://user-images.githubusercontent.com/5298006/125867690-c11f4396-e31b-4232-9ea5-822bf729df9a.gif)
+
+The icons work with light and dark mode.
+
+![light and dark](https://user-images.githubusercontent.com/5298006/125868293-96c6f541-0604-4238-9fc3-05ff6c2e08df.gif)
+
 ## Compatibility
 
 The plugin was tested in Obsidian v0.11.13 and subsequent versions, but probably works with older versions.
