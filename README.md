@@ -29,6 +29,7 @@ VSCode can't open a workspace without a further confirmation dialog (that you ju
 ## Credits
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
+I got the icon from [icon-icons.com](https://icon-icons.com/icon/visual-studio-code-logo/144754) and resized it with [iLoveIMG](https://www.iloveimg.com/resize-image/resize-svg).
 
 ## Support
 
