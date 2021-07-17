@@ -1,4 +1,7 @@
-import { addIcon, FileSystemAdapter, Plugin } from 'obsidian';
+import {
+	addIcon, FileSystemAdapter, Plugin,
+	PluginSettingTab, App, Setting
+} from 'obsidian';
 
 let svg = `
 <path
@@ -9,11 +12,14 @@ let svg = `
 addIcon('vscode-logo', svg);
 export default class OpenVSCode extends Plugin {
 	ribbonIcon: HTMLElement;
+	settings: OpenVSCodeSettings;
 
 	async onload() {
-		this.ribbonIcon = this.addRibbonIcon('vscode-logo', 'VSCode', () => {
-			this.openVSCode();
-		});
+
+		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
+		await this.loadSettings();
+
+		this.refreshIconRibbon();
 
 		this.addCommand({
 			id: 'open-vscode',
@@ -31,4 +37,58 @@ export default class OpenVSCode extends Plugin {
 		let url = "vscode://file/" + path;
 		window.open(url, "_blank");
 	}
+
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	refreshIconRibbon = () => {
+		this.ribbonIcon?.remove();
+		if (this.settings.ribbonIcon) {
+			this.ribbonIcon = this.addRibbonIcon('vscode-logo', 'VSCode', () => {
+				this.openVSCode();
+			});
+		}
+	}
+}
+
+interface OpenVSCodeSettings {
+	ribbonIcon: boolean,
+}
+
+const DEFAULT_SETTINGS: OpenVSCodeSettings = {
+	ribbonIcon: true,
+}
+
+class OpenVSCodeSettingsTab extends PluginSettingTab {
+
+	plugin: OpenVSCode;
+
+	constructor(app: App, plugin: OpenVSCode) {
+		super(app, plugin);
+		this.plugin = plugin;
+	}
+
+	display(): void {
+		let { containerEl } = this;
+		containerEl.empty();
+		containerEl.createEl("h2", { text: "Settings" });
+
+		new Setting(containerEl)
+			.setName('Ribbon Icon')
+			.setDesc('Turn on if you want to have a Ribbon Icon.')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.ribbonIcon)
+				.onChange((value) => {
+					this.plugin.settings.ribbonIcon = value;
+					this.plugin.saveSettings();
+					this.plugin.refreshIconRibbon();
+				})
+			)
+	}
+
 }
