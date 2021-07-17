@@ -10,7 +10,7 @@ The icons work with light and dark mode.
 
 ![light and dark](https://user-images.githubusercontent.com/5298006/125868293-96c6f541-0604-4238-9fc3-05ff6c2e08df.gif)
 
-You can also use it as a command and assign hotkeys to it.
+You can also use it as a command and assign hotkeys to it. You can disable the ribbon button in settings.
 ![command](https://user-images.githubusercontent.com/5298006/125869408-d39d870b-ab4f-42d0-b915-b6abc1e617d5.png)
 
 ## Compatibility
@@ -28,8 +28,10 @@ VSCode can't open a workspace without a further confirmation dialog (that you ju
 
 ## Credits
 
+Toggle ribbon setting by [@ozntel](https://github.com/ozntel).
+
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
-I got the icon from [icon-icons.com](https://icon-icons.com/icon/visual-studio-code-logo/144754) and resized it with [iLoveIMG](https://www.iloveimg.com/resize-image/resize-svg).
+The icon is from [icon-icons.com](https://icon-icons.com/icon/visual-studio-code-logo/144754) and was resized with [iLoveIMG](https://www.iloveimg.com/resize-image/resize-svg).
 
 ## Support
 

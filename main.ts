@@ -15,7 +15,6 @@ export default class OpenVSCode extends Plugin {
 	settings: OpenVSCodeSettings;
 
 	async onload() {
-
 		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 		await this.loadSettings();
 
