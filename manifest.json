@@ -1,7 +1,7 @@
 {
 	"id": "open-vscode",
 	"name": "Open vault in VSCode",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"minAppVersion": "0.11.13",
 	"description": "Ribbon button and command to open vault as a Visual Studio Code workspace",
 	"author": "NomarCub",

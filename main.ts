@@ -41,7 +41,11 @@ export default class OpenVSCode extends Plugin {
 			const { exec } = require("child_process");
 			const template = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
 			const command = template.replace("{{vaultpath}}", path);
-			exec(command);
+			exec(command, (error: any, stdout: any, stderr: any) => {
+				if (error) {
+					console.error(`exec error: ${error}`);
+				}
+			});
 		}
 	}
 
