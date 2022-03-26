@@ -19,18 +19,14 @@ By default the plugin uses `child_process` to launch VSCode with the `code` comm
 
 You can template the command opening VSCode however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
 
-## Compatibility
-
-The plugin was tested in Obsidian v0.11.13 and subsequent versions, but probably works with older versions.
-
 ## Installation
 
 You can install the plugin via the Community Plugins tab within Obsidian.
 You can also manually copy from releases to your `.obsidian/plugins/open-vscode` folder.
 
-## Issues
+## Caveats
 
-Using the URL method for opening, VSCode can't open a workspace without a further confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
+When you use the URL method for opening, VSCode can't open a workspace without a further confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
 
 ## Credits
 

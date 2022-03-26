@@ -2,6 +2,7 @@ import {
 	addIcon, App, FileSystemAdapter, Plugin,
 	PluginSettingTab, Setting
 } from 'obsidian';
+// import { exec } from "child_process"
 
 const svg = `
 <path
@@ -40,10 +41,10 @@ export default class OpenVSCode extends Plugin {
 		else {
 			const { exec } = require("child_process");
 			const file = this.app.workspace.getActiveFile();
-			var command = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
+			let command = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
 			command = replaceAll(command, "{{vaultpath}}", path);
 			command = replaceAll(command, "{{filepath}}", file?.path ?? "");
-			exec(command, (error: any, stdout: any, stderr: any) => {
+			exec(command, (error: never, stdout: never, stderr: never) => {
 				if (error) {
 					console.error(`exec error: ${error}`);
 				}
@@ -132,10 +133,10 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 }
 
 // https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
-function escapeRegExp(string: String) {
+function escapeRegExp(string: string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function replaceAll(str: String, find: String, replace: any) {
+function replaceAll(str: string, find: string, replace: string) {
 	return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
