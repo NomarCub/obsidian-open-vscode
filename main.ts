@@ -2,7 +2,6 @@ import {
 	addIcon, App, FileSystemAdapter, Plugin,
 	PluginSettingTab, Setting
 } from 'obsidian';
-// import { exec } from "child_process"
 
 const svg = `
 <path
@@ -39,6 +38,7 @@ export default class OpenVSCode extends Plugin {
 			window.open(url, "_blank");
 		}
 		else {
+			// eslint-disable-next-line @typescript-eslint/no-var-requires
 			const { exec } = require("child_process");
 			const file = this.app.workspace.getActiveFile();
 			let command = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
