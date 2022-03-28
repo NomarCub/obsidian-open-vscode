@@ -101,7 +101,7 @@ interface OpenVSCodeSettings {
 const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	ribbonIcon: true,
 	useURL: false,
-	executeTemplate: 'code "{{vaultpath}}/{{filepath}}"',
+	executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
 	workspacePath: '',
 	openFile: true,
 };
@@ -141,9 +141,9 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 				}),
 			);
 		new Setting(containerEl)
-			.setName('Default template for executing the `code` command')
+			.setName('Template for executing the `code` command')
 			.setDesc(
-				'You can use the following variables: `{{vaultpath}}`, `{{filepath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`',
+				'You can use the following variables: `{{vaultpath}} (absolute)`, `{{filepath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`',
 			)
 			.addText((text) =>
 				text

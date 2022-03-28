@@ -17,7 +17,7 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ## Settings
 
-### Default template for executing the `code` command
+### Open VSCode by executing the `code` command
 
 By default the plugin uses `child_process` to launch VSCode with the `code` command, but the previous method using URLs can still be enabled by checking the following option:
 
@@ -25,13 +25,14 @@ By default the plugin uses `child_process` to launch VSCode with the `code` comm
 
 On some systems, this may be faster than using the `child_process` approach.
 
-### Default template for executing the `code` command
+### Template for executing the `code` command
 
 You can template the command opening VSCode however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
 
 Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code").
 
-Example of loading a file using VSCode: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`.
+You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative).
+The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
 ### Path to VSCode Workspace
 
