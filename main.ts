@@ -82,7 +82,7 @@ interface OpenVSCodeSettings {
 const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	ribbonIcon: true,
 	useURL: false,
-	executeTemplate: "code \"{{vaultpath}}\"",
+	executeTemplate: 'code "{{vaultpath}}/{{filepath}}"',
 }
 
 class OpenVSCodeSettingsTab extends PluginSettingTab {
