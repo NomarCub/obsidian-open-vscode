@@ -112,7 +112,9 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 			);
 		new Setting(containerEl)
 			.setName('Use URL')
-			.setDesc('Open VSCode using a `vscode://` URL instead of executing the `code` command.')
+			.setDesc(
+				'Open VSCode using a `vscode://` URL instead of executing the `code` command. Opening via URL may be faster than the alternative on some systems.'
+			)
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.useURL)
 				.onChange((value) => {
@@ -122,7 +124,9 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 			);
 		new Setting(containerEl)
 			.setName('Default template for executing the `code` command')
-			.setDesc('You can use the following variables: {{vaultpath}}, {{filepath}} (relative)')
+			.setDesc(
+				'You can use the following variables: `{{vaultpath}}`, `{{filepath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`'
+			)
 			.addText(text => text.setPlaceholder(DEFAULT_SETTINGS.executeTemplate)
 				.setValue(this.plugin.settings.executeTemplate || DEFAULT_SETTINGS.executeTemplate)
 				.onChange((value) => {

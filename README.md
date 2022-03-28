@@ -15,9 +15,23 @@ The icons work with light and dark mode.
 You can also use it as a command and assign hotkeys to it. You can disable the ribbon button in settings.
 ![command](https://user-images.githubusercontent.com/5298006/125869408-d39d870b-ab4f-42d0-b915-b6abc1e617d5.png)
 
-By default the plugin uses `child_process` to launch VSCode with the `code` command, but the previous method using URLs can still be enabled.
+## Settings
+
+### Default template for executing the `code` command
+
+By default the plugin uses `child_process` to launch VSCode with the `code` command, but the previous method using URLs can still be enabled by checking the following option:
+
+### Open VSCode using a `vscode://` URL instead of executing the `code` command.
+
+On some systems, this may be faster than using the `child_process` approach.
+
+### Default template for executing the `code` command
 
 You can template the command opening VSCode however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
+
+Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code").
+
+Example of loading a file using VSCode: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`.
 
 ## Installation
 
@@ -26,7 +40,7 @@ You can also manually copy from releases to your `.obsidian/plugins/open-vscode`
 
 ## Caveats
 
-When you use the URL method for opening, VSCode can't open a workspace without a further confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
+The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
 
 ## Credits
 
