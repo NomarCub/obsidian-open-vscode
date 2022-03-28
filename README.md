@@ -51,6 +51,12 @@ You can also manually copy from releases to your `.obsidian/plugins/open-vscode`
 
 The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
 
+## Development
+
+Run `npm install` for dependencies and `npm run build` to build.
+
+This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there. Contributions are welcome.
+
 ## Credits
 
 Toggle ribbon setting by [@ozntel](https://github.com/ozntel).
