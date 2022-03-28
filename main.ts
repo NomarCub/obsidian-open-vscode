@@ -15,6 +15,7 @@ export default class OpenVSCode extends Plugin {
 	settings: OpenVSCodeSettings;
 
 	async onload() {
+		console.log('Loading ' + this.manifest.name + ' plugin');
 		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 		await this.loadSettings();
 
@@ -35,6 +36,7 @@ export default class OpenVSCode extends Plugin {
 		const path = this.app.vault.adapter.getBasePath();
 		if (this.settings.useURL) {
 			const url = "vscode://file/" + path;
+			console.log('[openVSCode]', { url });
 			window.open(url, "_blank");
 		}
 		else {
@@ -44,6 +46,7 @@ export default class OpenVSCode extends Plugin {
 			let command = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
 			command = replaceAll(command, "{{vaultpath}}", path);
 			command = replaceAll(command, "{{filepath}}", file?.path ?? "");
+			console.log('[openVSCode]', { command });
 			exec(command, (error: never, stdout: never, stderr: never) => {
 				if (error) {
 					console.error(`exec error: ${error}`);
