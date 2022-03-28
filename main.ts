@@ -32,20 +32,24 @@ export default class OpenVSCode extends Plugin {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
+		const { executeTemplate, useURL } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
-		if (this.settings.useURL) {
+		const file = this.app.workspace.getActiveFile();
+		const filePath = file?.path ?? '';
+
+		if (useURL) {
 			const url = "vscode://file/" + path;
 			console.log('[openVSCode]', { url });
 			window.open(url, "_blank");
 		}
 		else {
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const { exec } = require("child_process");
-			const file = this.app.workspace.getActiveFile();
-			let command = this.settings.executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : this.settings.executeTemplate;
-			command = replaceAll(command, "{{vaultpath}}", path);
-			command = replaceAll(command, "{{filepath}}", file?.path ?? "");
+			const { exec } = require('child_process');
+
+			let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
+			command = replaceAll(command, '{{vaultpath}}', path);
+			command = replaceAll(command, '{{filepath}}', filePath);
 			console.log('[openVSCode]', { command });
 			exec(command, (error: never, stdout: never, stderr: never) => {
 				if (error) {
