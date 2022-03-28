@@ -33,6 +33,14 @@ Note that on MacOS, a full path to the VSCode executable is required (generally 
 
 Example of loading a file using VSCode: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`.
 
+### Path to VSCode Workspace
+
+If "Use URL" is checked, VSCode will open Obsidian files in this workspace (requires an absolute path).
+
+### Open file
+
+If "Use URL" is checked, open the current file rather than the root of the Obsidian vault.
+
 ## Installation
 
 You can install the plugin via the Community Plugins tab within Obsidian.

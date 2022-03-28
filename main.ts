@@ -32,16 +32,33 @@ export default class OpenVSCode extends Plugin {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
-		const { executeTemplate, useURL } = this.settings;
+		const { executeTemplate, openFile, workspacePath, useURL } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
 
 		if (useURL) {
-			const url = "vscode://file/" + path;
-			console.log('[openVSCode]', { url });
-			window.open(url, "_blank");
+			// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
+			const maybeFile = openFile ? '/' + filePath : '';
+			const url = `vscode://file/${path}${maybeFile}`;
+
+			let timeout = 0;
+			const useWorkspace = workspacePath.trim().length;
+			if (useWorkspace) {
+				window.open(`vscode://file/${workspacePath}`);
+				timeout = 200; // anecdotally, seems to be the min required for the workspace to activate
+			}
+			// open in a setTimeout callback to allow time
+			// for the workspace to be activated first
+			setTimeout(() => {
+				if (useWorkspace)
+					console.log('[openVSCode] waiting for workspace to be active', {
+						workspacePath,
+					});
+				console.log('[openVSCode]', { url });
+				window.open(url);
+			}, timeout);
 		}
 		else {
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -81,12 +98,16 @@ interface OpenVSCodeSettings {
 	ribbonIcon: boolean,
 	useURL: boolean,
 	executeTemplate: string,
+	workspacePath: string;
+	openFile: boolean;
 }
 
 const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	ribbonIcon: true,
 	useURL: false,
 	executeTemplate: 'code "{{vaultpath}}/{{filepath}}"',
+	workspacePath: '',
+	openFile: true,
 }
 
 class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -139,8 +160,33 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 					this.plugin.settings.executeTemplate = value;
 					this.plugin.saveData(this.plugin.settings);
 				}));
-	}
+		new Setting(containerEl)
+					.setName('Path to VSCode Workspace (Use URL only)')
+					.setDesc(
+						'If "Use URL" is checked, VSCode will open Obsidian files in this workspace (requires an absolute path)',
+					)
+					.addText((text) =>
+						text
+							.setPlaceholder(DEFAULT_SETTINGS.workspacePath)
+							.setValue(this.plugin.settings.workspacePath || DEFAULT_SETTINGS.workspacePath)
+							.onChange((value) => {
+								value = value.trim();
+								if (value === '') value = DEFAULT_SETTINGS.workspacePath;
+								this.plugin.settings.workspacePath = value;
+								this.plugin.saveData(this.plugin.settings);
+							}),
+					);
 
+				new Setting(containerEl)
+					.setName('Open current file (Use URL only)')
+					.setDesc('If "Use URL" is checked, open the current file rather than the root of the vault')
+					.addToggle((toggle) =>
+						toggle.setValue(this.plugin.settings.openFile || DEFAULT_SETTINGS.openFile).onChange((value) => {
+							this.plugin.settings.openFile = value;
+							this.plugin.saveData(this.plugin.settings);
+						}),
+					);
+	}
 }
 
 // https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
