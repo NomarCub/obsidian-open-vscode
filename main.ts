@@ -1,4 +1,3 @@
-import { runInThisContext } from 'vm';
 import { App, FileSystemAdapter, Plugin, PluginSettingTab, Setting, addIcon } from 'obsidian';
 
 const svg = `
@@ -46,6 +45,12 @@ export default class OpenVSCode extends Plugin {
 				id: 'open-vscode-reload',
 				name: 'Reload the plugin in dev',
 				callback: this.reload.bind(this),
+			});
+
+			this.addCommand({
+				id: 'open-vscode-reset-settings',
+				name: 'Reset plugins settings to default in dev',
+				callback: this.resetSettings.bind(this),
 			});
 		}
 	}
@@ -120,6 +125,12 @@ export default class OpenVSCode extends Plugin {
 	}
 
 	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	async resetSettings() {
+		console.log('[open-vscode]', { old: this.settings, DEFAULT_SETTINGS });
+		this.settings = DEFAULT_SETTINGS;
 		await this.saveData(this.settings);
 	}
 
