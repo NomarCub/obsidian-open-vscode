@@ -171,10 +171,10 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Settings' });
+		containerEl.createEl('h3', { text: 'General settings' });
 
 		new Setting(containerEl)
-			.setName('Ribbon Icon')
+			.setName('Display Ribbon Icon')
 			.setDesc('Turn on if you want to have a Ribbon Icon.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.ribbonIcon).onChange((value) => {
@@ -194,6 +194,9 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 					this.plugin.saveSettings();
 				}),
 			);
+
+		containerEl.createEl('h3', { text: 'Open via `code` CLI settings' });
+
 		new Setting(containerEl)
 			.setName('Template for executing the `code` command')
 			.setDesc(
@@ -210,6 +213,9 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 						this.plugin.saveData(this.plugin.settings);
 					}),
 			);
+
+		containerEl.createEl('h3', { text: 'Open via `vscode://` URL settings' });
+
 		new Setting(containerEl)
 			.setName('Path to VSCode Workspace (Use URL only)')
 			.setDesc(
