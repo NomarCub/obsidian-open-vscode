@@ -37,6 +37,12 @@ export default class OpenVSCode extends Plugin {
 			callback: this.openVSCode.bind(this),
 		});
 
+		this.addCommand({
+			id: 'open-vscode-via-url',
+			name: 'Open as Visual Studio Code workspace using a vscode:// URL',
+			callback: this.openVSCodeUrl.bind(this),
+		});
+
 		DEV =
 			(this.app as AppWithPlugins).plugins.enabledPlugins.has('hot-reload') &&
 			(this.app as AppWithPlugins).plugins.plugins['hot-reload'].enabledPlugins.has(this.manifest.id);
@@ -60,46 +66,71 @@ export default class OpenVSCode extends Plugin {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
-		const { executeTemplate, openFile, workspacePath, useURL } = this.settings;
+		const { executeTemplate } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
 
-		if (useURL) {
-			// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-			const maybeFile = openFile ? '/' + filePath : '';
-			const url = `vscode://file/${path}${maybeFile}`;
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const { exec } = require('child_process');
 
-			let timeout = 0;
-			const useWorkspace = workspacePath.trim().length;
-			if (useWorkspace) {
-				window.open(`vscode://file/${workspacePath}`);
-				timeout = 200; // anecdotally, seems to be the min required for the workspace to activate
+		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
+		command = replaceAll(command, '{{vaultpath}}', path);
+		command = replaceAll(command, '{{filepath}}', filePath);
+		if (DEV) console.log('[openVSCode]', { command });
+		exec(command, (error: never, stdout: never, stderr: never) => {
+			if (error) {
+				console.error(`[openVSCode] exec error: ${error}`);
 			}
-			// open in a setTimeout callback to allow time
-			// for the workspace to be activated first
-			setTimeout(() => {
-				if (useWorkspace)
-					console.log('[openVSCode] waiting for workspace to be active', {
-						workspacePath,
-					});
-				console.log('[openVSCode]', { url });
-				window.open(url);
-			}, timeout);
-		} else {
-			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const { exec } = require('child_process');
+		});
+	}
 
-			let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
-			command = replaceAll(command, '{{vaultpath}}', path);
-			command = replaceAll(command, '{{filepath}}', filePath);
-			console.log('[openVSCode]', { command });
-			exec(command, (error: never, stdout: never, stderr: never) => {
-				if (error) {
-					console.error(`exec error: ${error}`);
-				}
+	async openVSCodeUrl() {
+		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
+			return;
+		}
+		const { openFile } = this.settings;
+
+		const path = this.app.vault.adapter.getBasePath();
+		const file = this.app.workspace.getActiveFile();
+		const filePath = file?.path ?? '';
+		if (DEV)
+			console.log('[open-vscode]', {
+				settings: this.settings,
+				path,
+				filePath,
 			});
+
+		// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
+		let url = `vscode://file/${path}`;
+
+		if (openFile) {
+			url += `/${filePath}`;
+			/*
+			By default, opening a file via the vscode:// URL will cause that file to open
+			in the front-most window in VSCode. We assume that it is preferred that files from
+			Obsidian should all open in the same workspace.
+
+			As a workaround, we issue two open requests to VSCode in quick succession: the first to
+			bring the workspace to front, the second to open the file.
+
+			There is a ticket requesting this feature for VSCode:
+			https://github.com/microsoft/vscode/issues/150078
+			*/
+
+			// HACK: first open the _workspace_ to bring the correct window to the front....
+			const workspacePath = replaceAll(this.settings.workspacePath, '{{vaultpath}}', path);
+			window.open(`vscode://file/${workspacePath}`);
+
+			// ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
+			setTimeout(() => {
+				if (DEV) console.log('[openVSCode]', { url });
+				window.open(url);
+			}, 200); // anecdotally, this seems to be the min required for the workspace to activate
+		} else {
+			if (DEV) console.log('[openVSCode]', { url });
+			window.open(url);
 		}
 	}
 

@@ -3,18 +3,16 @@ import OpenVSCode from './main';
 
 export interface OpenVSCodeSettings {
 	ribbonIcon: boolean;
-	useURL: boolean;
 	executeTemplate: string;
-	workspacePath: string;
 	openFile: boolean;
+	workspacePath: string;
 }
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	ribbonIcon: true,
-	useURL: false,
 	executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
-	workspacePath: '',
 	openFile: true,
+	workspacePath: '{{vaultpath}}',
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -41,18 +39,6 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 				}),
 			);
 
-		new Setting(containerEl)
-			.setName('Use URL')
-			.setDesc(
-				'Open VSCode using a `vscode://` URL instead of executing the `code` command. Opening via URL may be faster than the alternative on some systems.',
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.useURL).onChange((value) => {
-					this.plugin.settings.useURL = value;
-					this.plugin.saveSettings();
-				}),
-			);
-
 		containerEl.createEl('h3', { text: 'Open via `code` CLI settings' });
 
 		new Setting(containerEl)
@@ -75,10 +61,21 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 		containerEl.createEl('h3', { text: 'Open via `vscode://` URL settings' });
 
 		new Setting(containerEl)
-			.setName('Path to VSCode Workspace (Use URL only)')
+			.setName('Open current file')
+			.setDesc('Open the current file rather than the root of the vault.')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.openFile || DEFAULT_SETTINGS.openFile).onChange((value) => {
+					this.plugin.settings.openFile = value;
+					this.plugin.saveData(this.plugin.settings);
+				}),
+			);
+
+		new Setting(containerEl)
+			.setName('Path to VSCode Workspace')
 			.setDesc(
-				'If "Use URL" is checked, VSCode will open Obsidian files in this workspace (requires an absolute path)',
+				'Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a Multi Root workspace file: ',
 			)
+			.setClass('setting-item--vscode-workspacePath')
 			.addText((text) =>
 				text
 					.setPlaceholder(DEFAULT_SETTINGS.workspacePath)
@@ -91,14 +88,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 					}),
 			);
 
-		new Setting(containerEl)
-			.setName('Open current file (Use URL only)')
-			.setDesc('If "Use URL" is checked, open the current file rather than the root of the vault')
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.openFile || DEFAULT_SETTINGS.openFile).onChange((value) => {
-					this.plugin.settings.openFile = value;
-					this.plugin.saveData(this.plugin.settings);
-				}),
-			);
+		const workspacePathDescEl = containerEl.querySelector(
+			'.setting-item--vscode-workspacePath .setting-item-description',
+		);
+		workspacePathDescEl.appendChild(
+			createEl('a', {
+				href: 'https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces',
+				text: 'https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces',
+			}),
+		);
+		workspacePathDescEl.appendText('.');
 	}
 }
