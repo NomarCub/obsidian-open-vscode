@@ -6,6 +6,7 @@ export interface OpenVSCodeSettings {
 	executeTemplate: string;
 	openFile: boolean;
 	workspacePath: string;
+	useUrlInsiders: boolean;
 }
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
@@ -13,6 +14,7 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
 	openFile: true,
 	workspacePath: '{{vaultpath}}',
+	useUrlInsiders: false,
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -98,5 +100,12 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 			}),
 		);
 		workspacePathDescEl.appendText('.');
+
+		new Setting(containerEl).setName('Open VSCode using a `vscode-insiders://` URL').addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.useUrlInsiders).onChange((value) => {
+				this.plugin.settings.useUrlInsiders = value;
+				this.plugin.saveSettings();
+			});
+		});
 	}
 }

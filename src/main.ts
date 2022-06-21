@@ -90,7 +90,7 @@ export default class OpenVSCode extends Plugin {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
-		const { openFile } = this.settings;
+		const { openFile, useUrlInsiders } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
@@ -103,7 +103,8 @@ export default class OpenVSCode extends Plugin {
 			});
 
 		// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-		let url = `vscode://file/${path}`;
+		const protocol = useUrlInsiders ? 'vscode-insiders://' : 'vscode://';
+		let url = `${protocol}file/${path}`;
 
 		if (openFile) {
 			url += `/${filePath}`;
