@@ -58,7 +58,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Template for executing the `code` command')
 			.setDesc(
-				'You can use the following variables: `{{vaultpath}} (absolute)`, `{{filepath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code {{vaultpath}}/{{filepath}}`',
+				'You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`',
 			)
 			.addText((text) =>
 				text
