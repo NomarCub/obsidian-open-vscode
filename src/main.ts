@@ -47,6 +47,12 @@ export default class OpenVSCode extends Plugin {
 				name: 'Reload the plugin in dev',
 				callback: this.reload.bind(this),
 			});
+
+			this.addCommand({
+				id: 'open-vscode-reset-settings',
+				name: 'Reset plugins settings to default in dev',
+				callback: this.resetSettings.bind(this),
+			});
 		}
 	}
 
@@ -130,6 +136,12 @@ export default class OpenVSCode extends Plugin {
 		await plugins.disablePlugin(id);
 		await plugins.enablePlugin(id);
 		console.log('[open-vscode] reloaded', this);
+	}
+
+	async resetSettings() {
+		console.log('[open-vscode]', { old: this.settings, DEFAULT_SETTINGS });
+		this.settings = DEFAULT_SETTINGS;
+		await this.saveData(this.settings);
 	}
 }
 
