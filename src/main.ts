@@ -1,4 +1,4 @@
-import { addIcon, FileSystemAdapter, Plugin } from 'obsidian';
+import { App, FileSystemAdapter, Plugin, addIcon } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
 
 const svg = `
@@ -8,6 +8,18 @@ const svg = `
 />`;
 
 addIcon('vscode-logo', svg);
+
+type AppWithPlugins = App & {
+	plugins: {
+		disablePlugin: (id: string) => {};
+		enablePlugin: (id: string) => {};
+		enabledPlugins: Set<string>;
+		plugins: Record<string, any>;
+	};
+};
+
+let DEV: boolean = false;
+
 export default class OpenVSCode extends Plugin {
 	ribbonIcon: HTMLElement;
 	settings: OpenVSCodeSettings;
@@ -24,6 +36,18 @@ export default class OpenVSCode extends Plugin {
 			name: 'Open as Visual Studio Code workspace',
 			callback: this.openVSCode.bind(this),
 		});
+
+		DEV =
+			(this.app as AppWithPlugins).plugins.enabledPlugins.has('hot-reload') &&
+			(this.app as AppWithPlugins).plugins.plugins['hot-reload'].enabledPlugins.has(this.manifest.id);
+
+		if (DEV) {
+			this.addCommand({
+				id: 'open-vscode-reload',
+				name: 'Reload the plugin in dev',
+				callback: this.reload.bind(this),
+			});
+		}
 	}
 
 	async openVSCode() {
@@ -89,6 +113,24 @@ export default class OpenVSCode extends Plugin {
 			});
 		}
 	};
+
+	/**
+	 * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
+	 *
+	 * > ...while doing development, you may need to reload your plugin
+	 * > after making changes. You can do this by reloading, sure, but it’s easier
+	 * > to just go to settings and then toggle the plugin off, then back on again.
+	 * >
+	 * > You can also automate this process from within the plugin itself, by
+	 * > including a command that does something like this:
+	 */
+	async reload() {
+		const id = this.manifest.id;
+		const plugins = (this.app as AppWithPlugins).plugins;
+		await plugins.disablePlugin(id);
+		await plugins.enablePlugin(id);
+		console.log('[open-vscode] reloaded', this);
+	}
 }
 
 // https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
