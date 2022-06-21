@@ -107,7 +107,7 @@ export default class OpenVSCode extends Plugin {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
-		const { openFile } = this.settings;
+		const { openFile, useUrlInsiders } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
@@ -120,7 +120,8 @@ export default class OpenVSCode extends Plugin {
 			});
 
 		// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-		let url = `vscode://file/${path}`;
+		const protocol = useUrlInsiders ? 'vscode-insiders://' : 'vscode://';
+		let url = `${protocol}file/${path}`;
 
 		if (openFile) {
 			url += `/${filePath}`;
@@ -180,6 +181,7 @@ interface OpenVSCodeSettings {
 	executeTemplate: string;
 	openFile: boolean;
 	workspacePath: string;
+	useUrlInsiders: boolean;
 }
 
 const DEFAULT_SETTINGS: OpenVSCodeSettings = {
@@ -187,6 +189,7 @@ const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
 	openFile: true,
 	workspacePath: '{{vaultpath}}',
+	useUrlInsiders: false,
 };
 
 class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -272,6 +275,13 @@ class OpenVSCodeSettingsTab extends PluginSettingTab {
 			}),
 		);
 		workspacePathDescEl.appendText('.');
+
+		new Setting(containerEl).setName('Open VSCode using a `vscode-insiders://` URL').addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.useUrlInsiders).onChange((value) => {
+				this.plugin.settings.useUrlInsiders = value;
+				this.plugin.saveSettings();
+			});
+		});
 	}
 }
 
