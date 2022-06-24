@@ -11,8 +11,8 @@ addIcon('vscode-logo', svg);
 
 type AppWithPlugins = App & {
 	plugins: {
-		disablePlugin: (id: string) => {};
-		enablePlugin: (id: string) => {};
+		disablePlugin: (id: string) => unknown;
+		enablePlugin: (id: string) => unknown;
 		enabledPlugins: Set<string>;
 		plugins: Record<string, any>;
 	};
