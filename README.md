@@ -1,6 +1,9 @@
 # Open in VSCode
 
-This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button and a command to open your vault as a Visual Studio Code workspace.
+This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button and two commands to open your vault as a Visual Studio Code workspace:
+
+-   `open-vscode`: Uses `child_process` to launch VSCode with the `code` command. Currently, this is the command bound to the ribbon button.
+-   `open-vscode-via-url`: Open VSCode using a `vscode://` URL _(Windows users, please see [notes regarding the UX of this command](#caveats-regarding-the-url-command-for-windows-users))_
 
 It's functionality is probably made redundant now using the [Shell commands](https://github.com/Taitava/obsidian-shellcommands) and [Customizable Sidebar](https://github.com/phibr0/obsidian-customizable-sidebar) (or [Buttons](https://github.com/shabegom/buttons)) plugins, but it'll be maintained for the foreseeable future.
 
@@ -17,13 +20,8 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ## Settings
 
-### Open VSCode by executing the `code` command
-
-By default the plugin uses `child_process` to launch VSCode with the `code` command, but the previous method using URLs can still be enabled by checking the following option:
-
-### Open VSCode using a `vscode://` URL instead of executing the `code` command.
-
-On some systems, this may be faster than using the `child_process` approach.
+-   **Display Ribbon Icon**
+-   **Ribbon opens via `code`** (can alteratively open via URL method)
 
 ### Template for executing the `code` command
 
@@ -34,28 +32,53 @@ Note that on MacOS, a full path to the VSCode executable is required (generally 
 You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative).
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
-### Path to VSCode Workspace
+### Settings for `open-vscode-via-url`
 
-If "Use URL" is checked, VSCode will open Obsidian files in this workspace (requires an absolute path).
+On some systems, this may be faster than using the `child_process` approach.
 
-### Open file
+-   **Open file**
 
-If "Use URL" is checked, open the current file rather than the root of the Obsidian vault.
+    Open the current file rather than the root of the Obsidian vault.
+
+-   **Path to VSCode Workspace**
+
+    Defaults to the {{vaultpath}} template variable. You can set this to an absolute
+    path to a ".code-workspace" file if you prefer to use a Multi Root workspace
+    file: https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces
+
+-   **Open VSCode using a `vscode-insiders://` URL**
+
+The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
+
+### Caveats regarding the URL command for Windows users
+
+TLDR; We recommend that Windows users prefer the `open-via-code` command.
+
+Due to security updates in VSCode, the user experience of using opening VSCode via URL comes with some known issues!
+
+On Windows, when opening via URL, you are prompted to allow VSCode to access the file. At present there's no option in VSCode to whitelist safe locations (ie your Obsidian vault), so you get this dialog every time ☹️.
+
+Worse, if you are opening via URL, _and_ have toggled the "Open File" setting on, then VSCode will attempt to open a _second_ instance of VSCode, and will warn that there's another instance of Code running but not responding.
+
+If this issue affects you, please consider watching and voting for the following VSCode issues:
+
+-   [Prompt users when opening vscode://file/... URIs · Issue #95252 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95252)
+-   [URL protocol: confirmation dialog · Issue #95670 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95670)
 
 ## Installation
 
 You can install the plugin via the Community Plugins tab within Obsidian.
 You can also manually copy from releases to your `.obsidian/plugins/open-vscode` folder.
 
-## Caveats
-
-The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
-
 ## Development
 
-Run `npm install` for dependencies and `npm run build` to build.
+Run `npm install` for dependencies and `npm run dev` to build and watch files.
 
 This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there. Contributions are welcome.
+
+If [pjeby/hot-reload](https://github.com/pjeby/hot-reload) is installed,
+activated, and open-vscode is registered with hot-reload, then extra logging
+and DX commands to refresh settings are activated.
 
 ## Credits
 

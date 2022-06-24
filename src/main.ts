@@ -1,4 +1,4 @@
-import { addIcon, FileSystemAdapter, Plugin } from 'obsidian';
+import { App, FileSystemAdapter, Plugin, addIcon } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
 
 const svg = `
@@ -8,6 +8,18 @@ const svg = `
 />`;
 
 addIcon('vscode-logo', svg);
+
+type AppWithPlugins = App & {
+	plugins: {
+		disablePlugin: (id: string) => {};
+		enablePlugin: (id: string) => {};
+		enabledPlugins: Set<string>;
+		plugins: Record<string, any>;
+	};
+};
+
+let DEV: boolean = false;
+
 export default class OpenVSCode extends Plugin {
 	ribbonIcon: HTMLElement;
 	settings: OpenVSCodeSettings;
@@ -24,52 +36,102 @@ export default class OpenVSCode extends Plugin {
 			name: 'Open as Visual Studio Code workspace',
 			callback: this.openVSCode.bind(this),
 		});
+
+		this.addCommand({
+			id: 'open-vscode-via-url',
+			name: 'Open as Visual Studio Code workspace using a vscode:// URL',
+			callback: this.openVSCodeUrl.bind(this),
+		});
+
+		DEV =
+			(this.app as AppWithPlugins).plugins.enabledPlugins.has('hot-reload') &&
+			(this.app as AppWithPlugins).plugins.plugins['hot-reload'].enabledPlugins.has(this.manifest.id);
+
+		if (DEV) {
+			this.addCommand({
+				id: 'open-vscode-reload',
+				name: 'Reload the plugin in dev',
+				callback: this.reload.bind(this),
+			});
+
+			this.addCommand({
+				id: 'open-vscode-reset-settings',
+				name: 'Reset plugins settings to default in dev',
+				callback: this.resetSettings.bind(this),
+			});
+		}
 	}
 
 	async openVSCode() {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
-		const { executeTemplate, openFile, workspacePath, useURL } = this.settings;
+		const { executeTemplate } = this.settings;
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
 
-		if (useURL) {
-			// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-			const maybeFile = openFile ? '/' + filePath : '';
-			const url = `vscode://file/${path}${maybeFile}`;
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const { exec } = require('child_process');
 
-			let timeout = 0;
-			const useWorkspace = workspacePath.trim().length;
-			if (useWorkspace) {
-				window.open(`vscode://file/${workspacePath}`);
-				timeout = 200; // anecdotally, seems to be the min required for the workspace to activate
+		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
+		command = replaceAll(command, '{{vaultpath}}', path);
+		command = replaceAll(command, '{{filepath}}', filePath);
+		if (DEV) console.log('[openVSCode]', { command });
+		exec(command, (error: never, stdout: never, stderr: never) => {
+			if (error) {
+				console.error(`[openVSCode] exec error: ${error}`);
 			}
-			// open in a setTimeout callback to allow time
-			// for the workspace to be activated first
-			setTimeout(() => {
-				if (useWorkspace)
-					console.log('[openVSCode] waiting for workspace to be active', {
-						workspacePath,
-					});
-				console.log('[openVSCode]', { url });
-				window.open(url);
-			}, timeout);
-		} else {
-			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const { exec } = require('child_process');
+		});
+	}
 
-			let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
-			command = replaceAll(command, '{{vaultpath}}', path);
-			command = replaceAll(command, '{{filepath}}', filePath);
-			console.log('[openVSCode]', { command });
-			exec(command, (error: never, stdout: never, stderr: never) => {
-				if (error) {
-					console.error(`exec error: ${error}`);
-				}
+	async openVSCodeUrl() {
+		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
+			return;
+		}
+		const { openFile, useUrlInsiders } = this.settings;
+
+		const path = this.app.vault.adapter.getBasePath();
+		const file = this.app.workspace.getActiveFile();
+		const filePath = file?.path ?? '';
+		if (DEV)
+			console.log('[open-vscode]', {
+				settings: this.settings,
+				path,
+				filePath,
 			});
+
+		// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
+		const protocol = useUrlInsiders ? 'vscode-insiders://' : 'vscode://';
+		let url = `${protocol}file/${path}`;
+
+		if (openFile) {
+			url += `/${filePath}`;
+			/*
+			By default, opening a file via the vscode:// URL will cause that file to open
+			in the front-most window in VSCode. We assume that it is preferred that files from
+			Obsidian should all open in the same workspace.
+
+			As a workaround, we issue two open requests to VSCode in quick succession: the first to
+			bring the workspace to front, the second to open the file.
+
+			There is a ticket requesting this feature for VSCode:
+			https://github.com/microsoft/vscode/issues/150078
+			*/
+
+			// HACK: first open the _workspace_ to bring the correct window to the front....
+			const workspacePath = replaceAll(this.settings.workspacePath, '{{vaultpath}}', path);
+			window.open(`vscode://file/${workspacePath}`);
+
+			// ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
+			setTimeout(() => {
+				if (DEV) console.log('[openVSCode]', { url });
+				window.open(url);
+			}, 200); // anecdotally, this seems to be the min required for the workspace to activate
+		} else {
+			if (DEV) console.log('[openVSCode]', { url });
+			window.open(url);
 		}
 	}
 
@@ -85,10 +147,35 @@ export default class OpenVSCode extends Plugin {
 		this.ribbonIcon?.remove();
 		if (this.settings.ribbonIcon) {
 			this.ribbonIcon = this.addRibbonIcon('vscode-logo', 'VSCode', () => {
-				this.openVSCode();
+				const ribbonCommand = this.settings.ribbonCommandUsesCode ? 'openVSCode' : 'openVSCodeUrl';
+				this[ribbonCommand]();
 			});
 		}
 	};
+
+	/**
+	 * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
+	 *
+	 * > ...while doing development, you may need to reload your plugin
+	 * > after making changes. You can do this by reloading, sure, but it’s easier
+	 * > to just go to settings and then toggle the plugin off, then back on again.
+	 * >
+	 * > You can also automate this process from within the plugin itself, by
+	 * > including a command that does something like this:
+	 */
+	async reload() {
+		const id = this.manifest.id;
+		const plugins = (this.app as AppWithPlugins).plugins;
+		await plugins.disablePlugin(id);
+		await plugins.enablePlugin(id);
+		console.log('[open-vscode] reloaded', this);
+	}
+
+	async resetSettings() {
+		console.log('[open-vscode]', { old: this.settings, DEFAULT_SETTINGS });
+		this.settings = DEFAULT_SETTINGS;
+		await this.saveData(this.settings);
+	}
 }
 
 // https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
