@@ -74,6 +74,22 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
 		containerEl.createEl('h3', { text: 'Open via `vscode://` URL settings' });
 
+		const openViaUrlCaveat = containerEl.createEl('p');
+		const openViaUrlCaveatEm = openViaUrlCaveat.createEl('em', {
+			text: `
+				⚠️ This setting is not recommended for Windows users due to
+				UX issues caused by security enhancements in VSCode on Windows.
+				More information:
+			`,
+		});
+		openViaUrlCaveatEm.appendChild(
+			createEl('a', {
+				text: 'Open in VSCode Readme',
+				href: 'https://github.com/NomarCub/obsidian-open-vscode/blob/master/README.md#caveats-regarding-the-url-command-for-windows-users',
+			}),
+		);
+		openViaUrlCaveatEm.appendText('.');
+
 		new Setting(containerEl)
 			.setName('Open current file')
 			.setDesc('Open the current file rather than the root of the vault.')
