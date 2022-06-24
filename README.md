@@ -20,6 +20,9 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ## Settings
 
+-   **Display Ribbon Icon**
+-   **Ribbon opens via `code`** (can alteratively open via URL method)
+
 ### Template for executing the `code` command
 
 You can template the command opening VSCode however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.

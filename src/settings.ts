@@ -3,6 +3,7 @@ import OpenVSCode from './main';
 
 export interface OpenVSCodeSettings {
 	ribbonIcon: boolean;
+	ribbonCommandUsesCode: boolean;
 	executeTemplate: string;
 	openFile: boolean;
 	workspacePath: string;
@@ -11,6 +12,7 @@ export interface OpenVSCodeSettings {
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 	ribbonIcon: true,
+	ribbonCommandUsesCode: true,
 	executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
 	openFile: true,
 	workspacePath: '{{vaultpath}}',
@@ -32,12 +34,22 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Display Ribbon Icon')
-			.setDesc('Turn on if you want to have a Ribbon Icon.')
+			.setDesc('Toggle this OFF if you want to hide the Ribbon Icon.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.ribbonIcon).onChange((value) => {
 					this.plugin.settings.ribbonIcon = value;
 					this.plugin.saveSettings();
 					this.plugin.refreshIconRibbon();
+				}),
+			);
+
+		new Setting(containerEl)
+			.setName('Ribbon opens via `code` command')
+			.setDesc(`Toggle this OFF if you'd prefer that the Ribbon Icon opens VSCode via URL.`)
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.ribbonCommandUsesCode).onChange((value) => {
+					this.plugin.settings.ribbonCommandUsesCode = value;
+					this.plugin.saveSettings();
 				}),
 			);
 

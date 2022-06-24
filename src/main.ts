@@ -147,7 +147,8 @@ export default class OpenVSCode extends Plugin {
 		this.ribbonIcon?.remove();
 		if (this.settings.ribbonIcon) {
 			this.ribbonIcon = this.addRibbonIcon('vscode-logo', 'VSCode', () => {
-				this.openVSCode();
+				const ribbonCommand = this.settings.ribbonCommandUsesCode ? 'openVSCode' : 'openVSCodeUrl';
+				this[ribbonCommand]();
 			});
 		}
 	};
