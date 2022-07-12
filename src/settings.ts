@@ -121,13 +121,13 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 		const workspacePathDescEl = containerEl.querySelector(
 			'.setting-item--vscode-workspacePath .setting-item-description',
 		);
-		workspacePathDescEl.appendChild(
+		workspacePathDescEl!.appendChild(
 			createEl('a', {
 				href: 'https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces',
 				text: 'https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces',
 			}),
 		);
-		workspacePathDescEl.appendText('.');
+		workspacePathDescEl!.appendText('.');
 
 		new Setting(containerEl).setName('Open VSCode using a `vscode-insiders://` URL').addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.useUrlInsiders).onChange((value) => {
