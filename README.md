@@ -65,15 +65,14 @@ If this issue affects you, please consider watching and voting for the following
 
 ## Installation
 
+You can install the plugin via the Community Plugins tab within the Obsidian app.  
 [Here](https://obsidian.md/plugins?id=copy-url-in-preview)'s the plugin in Obsidian's Community Plugins website.  
-You can also install the plugin via the Community Plugins tab within the Obsidian app.  
 You can install the plugin manually by copying a release to your `.obsidian/plugins/open-vscode` folder.
 
 ## Development
 
-Run `npm install` for dependencies and `npm run dev` to build and watch files.
-
-This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there. Contributions are welcome.
+This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there.  
+Contributions are welcome.
 
 If [pjeby/hot-reload](https://github.com/pjeby/hot-reload) is installed,
 activated, and open-vscode is registered with hot-reload, then extra logging
