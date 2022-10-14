@@ -87,4 +87,4 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and resturcture by [ptim](https://github.com/ptim).
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
-The icon is from [icon-icons.com](https://icon-icons.com/icon/visual-studio-code-logo/144754) and was resized with [iLoveIMG](https://www.iloveimg.com/resize-image/resize-svg).
+The icon is from [Simple Icons](https://simpleicons.org/?q=visual-studio-code) ([SVG](https://simpleicons.org/icons/visualstudiocode.svg)) and was resized with [iLoveIMG](https://www.iloveimg.com/resize-image/resize-svg).
