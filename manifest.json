@@ -6,5 +6,6 @@
 	"description": "Ribbon button and command to open vault as a Visual Studio Code workspace",
 	"author": "NomarCub",
 	"authorUrl": "https://github.com/NomarCub",
+	"fundingUrl": "https://ko-fi.com/nomarcub",
 	"isDesktopOnly": true
 }
