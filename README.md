@@ -66,7 +66,7 @@ If this issue affects you, please consider watching and voting for the following
 ## Installation
 
 You can install the plugin via the Community Plugins tab within the Obsidian app.  
-[Here](https://obsidian.md/plugins?id=copy-url-in-preview)'s the plugin in Obsidian's Community Plugins website.  
+[Here](https://obsidian.md/plugins?id=open-vscode)'s the plugin in Obsidian's Community Plugins website.  
 You can install the plugin manually by copying a release to your `.obsidian/plugins/open-vscode` folder.
 
 ## Development
