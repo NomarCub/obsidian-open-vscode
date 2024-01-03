@@ -76,6 +76,7 @@ export default class OpenVSCode extends Plugin {
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
+		const folderPath = file?.parent.path ?? '';
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const { exec } = require('child_process');
@@ -83,6 +84,7 @@ export default class OpenVSCode extends Plugin {
 		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
 		command = replaceAll(command, '{{vaultpath}}', path);
 		command = replaceAll(command, '{{filepath}}', filePath);
+		command = replaceAll(command, '{{folderpath}}', folderPath);
 		if (DEV) console.log('[openVSCode]', { command });
 		exec(command, (error: never, stdout: never, stderr: never) => {
 			if (error) {
