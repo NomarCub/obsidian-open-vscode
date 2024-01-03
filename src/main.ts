@@ -50,7 +50,7 @@ export default class OpenVSCode extends Plugin {
 
 		DEV =
 			(this.app as AppWithPlugins).plugins.enabledPlugins.has('hot-reload') &&
-			(this.app as AppWithPlugins).plugins.plugins['hot-reload'].enabledPlugins.has(this.manifest.id);
+			(this.app as AppWithPlugins).plugins.plugins['hot-reload']?.enabledPlugins.has(this.manifest.id);
 
 		if (DEV) {
 			this.addCommand({
