@@ -76,7 +76,7 @@ export default class OpenVSCode extends Plugin {
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
-		const folderPath = file?.parent.path ?? '';
+		const folderPath = file?.parent?.path ?? '';
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const { exec } = require('child_process');
