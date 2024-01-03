@@ -29,7 +29,7 @@ You can template the command opening VSCode however you like with its [provided 
 
 Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code").
 
-You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative).
+You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative).
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
 ### Settings for `open-vscode-via-url`
@@ -42,7 +42,7 @@ On some systems, this may be faster than using the `child_process` approach.
 
 - **Path to VSCode Workspace**
 
-  Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [Multi Root workspace file](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces)
+  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [Multi Root workspace file](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces)
 
 - **Open VSCode using a `vscode-insiders://` URL**
 
