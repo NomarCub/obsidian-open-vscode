@@ -1,4 +1,5 @@
-import { App, FileSystemAdapter, Plugin, addIcon } from 'obsidian';
+import { FileSystemAdapter, Plugin, addIcon } from 'obsidian';
+import 'obsidian-typings';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
 import { exec } from "child_process";
 
@@ -15,14 +16,10 @@ const svg = `
 
 addIcon('vscode-logo', svg);
 
-type AppWithPlugins = App & {
-	plugins: {
-		disablePlugin: (id: string) => unknown;
-		enablePlugin: (id: string) => unknown;
-		enabledPlugins: Set<string>;
-		plugins: Record<string, any>;
-	};
-};
+type HotReloadPlugin = Plugin & {
+	// https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
+	enabledPlugins: Set<string>
+}
 
 let DEV = false;
 
@@ -49,9 +46,8 @@ export default class OpenVSCode extends Plugin {
 			callback: this.openVSCodeUrl.bind(this),
 		});
 
-		DEV =
-			(this.app as AppWithPlugins).plugins.enabledPlugins.has('hot-reload') &&
-			(this.app as AppWithPlugins).plugins.plugins['hot-reload']?.enabledPlugins.has(this.manifest.id);
+		const hotReloadPlugin = this.app.plugins.getPlugin('hot-reload') as HotReloadPlugin | null;
+		DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
 
 		if (DEV) {
 			this.addCommand({
@@ -171,7 +167,7 @@ export default class OpenVSCode extends Plugin {
 	 */
 	async reload() {
 		const id = this.manifest.id;
-		const plugins = (this.app as AppWithPlugins).plugins;
+		const plugins = this.app.plugins;
 		await plugins.disablePlugin(id);
 		await plugins.enablePlugin(id);
 		console.log('[open-vscode] reloaded', this);
