@@ -82,9 +82,10 @@ export default class OpenVSCode extends Plugin {
 		const { exec } = require('child_process');
 
 		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
-		command = replaceAll(command, '{{vaultpath}}', path);
-		command = replaceAll(command, '{{filepath}}', filePath);
-		command = replaceAll(command, '{{folderpath}}', folderPath);
+		command = command
+			.replaceAll('{{vaultpath}}', path)
+			.replaceAll('{{filepath}}', filePath)
+			.replaceAll('{{folderpath}}', folderPath);
 		if (DEV) console.log('[openVSCode]', { command });
 		exec(command, (error: never, stdout: never, stderr: never) => {
 			if (error) {
@@ -128,7 +129,7 @@ export default class OpenVSCode extends Plugin {
 			*/
 
 			// HACK: first open the _workspace_ to bring the correct window to the front....
-			const workspacePath = replaceAll(this.settings.workspacePath, '{{vaultpath}}', path);
+			const workspacePath = this.settings.workspacePath.replaceAll('{{vaultpath}}', path);
 			window.open(`vscode://file/${workspacePath}`);
 
 			// ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
@@ -183,13 +184,4 @@ export default class OpenVSCode extends Plugin {
 		this.settings = DEFAULT_SETTINGS;
 		await this.saveData(this.settings);
 	}
-}
-
-// https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
-function escapeRegExp(string: string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function replaceAll(str: string, find: string, replace: string) {
-	return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
