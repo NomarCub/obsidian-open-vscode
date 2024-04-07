@@ -1,7 +1,8 @@
 import { FileSystemAdapter, Plugin, addIcon } from 'obsidian';
-import 'obsidian-typings';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as internal from 'obsidian-typings';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
-import { exec } from "child_process";
+import { exec } from 'child_process';
 
 const svg = `
 <svg role="img" viewBox="0 0 24 24"
