@@ -21,9 +21,9 @@ type HotReloadPlugin = Plugin & {
 	enabledPlugins: Set<string>
 }
 
-let DEV = false;
-
 export default class OpenVSCode extends Plugin {
+	DEV = false;
+
 	ribbonIcon: HTMLElement;
 	settings: OpenVSCodeSettings;
 
@@ -47,9 +47,9 @@ export default class OpenVSCode extends Plugin {
 		});
 
 		const hotReloadPlugin = this.app.plugins.getPlugin('hot-reload') as HotReloadPlugin | null;
-		DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
+		this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
 
-		if (DEV) {
+		if (this.DEV) {
 			this.addCommand({
 				id: 'open-vscode-reload',
 				name: 'Reload the plugin in dev',
@@ -80,7 +80,7 @@ export default class OpenVSCode extends Plugin {
 			.replaceAll('{{vaultpath}}', path)
 			.replaceAll('{{filepath}}', filePath)
 			.replaceAll('{{folderpath}}', folderPath);
-		if (DEV) console.log('[openVSCode]', { command });
+		if (this.DEV) console.log('[openVSCode]', { command });
 		exec(command, (error) => {
 			if (error) {
 				console.error(`[openVSCode] exec error: ${error}`);
@@ -97,7 +97,7 @@ export default class OpenVSCode extends Plugin {
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
 		const filePath = file?.path ?? '';
-		if (DEV)
+		if (this.DEV)
 			console.log('[open-vscode]', {
 				settings: this.settings,
 				path,
@@ -128,11 +128,11 @@ export default class OpenVSCode extends Plugin {
 
 			// ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
 			setTimeout(() => {
-				if (DEV) console.log('[openVSCode]', { url });
+				if (this.DEV) console.log('[openVSCode]', { url });
 				window.open(url);
 			}, 200); // anecdotally, this seems to be the min required for the workspace to activate
 		} else {
-			if (DEV) console.log('[openVSCode]', { url });
+			if (this.DEV) console.log('[openVSCode]', { url });
 			window.open(url);
 		}
 	}
