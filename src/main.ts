@@ -1,5 +1,6 @@
 import { App, FileSystemAdapter, Plugin, addIcon } from 'obsidian';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
+import { exec } from "child_process";
 
 const svg = `
 <svg role="img" viewBox="0 0 24 24"
@@ -78,16 +79,13 @@ export default class OpenVSCode extends Plugin {
 		const filePath = file?.path ?? '';
 		const folderPath = file?.parent?.path ?? '';
 
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const { exec } = require('child_process');
-
 		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
 		command = command
 			.replaceAll('{{vaultpath}}', path)
 			.replaceAll('{{filepath}}', filePath)
 			.replaceAll('{{folderpath}}', folderPath);
 		if (DEV) console.log('[openVSCode]', { command });
-		exec(command, (error: never, stdout: never, stderr: never) => {
+		exec(command, (error) => {
 			if (error) {
 				console.error(`[openVSCode] exec error: ${error}`);
 			}
