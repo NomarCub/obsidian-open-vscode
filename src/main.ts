@@ -65,7 +65,7 @@ export default class OpenVSCode extends Plugin {
 		}
 	}
 
-	async openVSCode() {
+	openVSCode() {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
@@ -84,12 +84,12 @@ export default class OpenVSCode extends Plugin {
 		if (this.DEV) console.log('[openVSCode]', { command });
 		exec(command, (error) => {
 			if (error) {
-				console.error(`[openVSCode] exec error: ${error}`);
+				console.error(`[openVSCode] exec error: ${error.message}`);
 			}
 		});
 	}
 
-	async openVSCodeUrl() {
+	openVSCodeUrl() {
 		if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
 			return;
 		}
