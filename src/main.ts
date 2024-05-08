@@ -4,6 +4,7 @@ import * as internal from 'obsidian-typings';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
 import { exec } from 'child_process';
 
+// source: https://simpleicons.org/?q=visual-studio-code
 const svg = `
 <svg role="img" viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg">
