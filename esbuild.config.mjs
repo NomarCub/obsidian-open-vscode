@@ -15,8 +15,12 @@ const prod = (process.argv[2] === "production");
 
 let outfile = "main.js";
 if (fs.existsSync('./.devtarget')) {
-	outfile = path.join(fs.readFileSync('./.devtarget', 'utf8').trim(), outfile);
-	console.log('Temporary output location:', outfile);
+	const outFolderOverride = fs.readFileSync('./.devtarget', 'utf8').trim().split("\n")
+		.map(line => line.trim()).filter(line => !line.startsWith("#") && !line.startsWith("//"))[0];
+	if (outFolderOverride) {
+		outfile = path.join(outFolderOverride, outfile);
+		console.log('Temporary output location:', outfile);
+	}
 }
 
 
