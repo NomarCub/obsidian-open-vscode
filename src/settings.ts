@@ -38,7 +38,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.ribbonIcon).onChange((value) => {
 					this.plugin.settings.ribbonIcon = value;
-					this.plugin.saveSettings();
+					void this.plugin.saveSettings();
 					this.plugin.refreshIconRibbon();
 				}),
 			);
@@ -49,7 +49,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.ribbonCommandUsesCode).onChange((value) => {
 					this.plugin.settings.ribbonCommandUsesCode = value;
-					this.plugin.saveSettings();
+					void this.plugin.saveSettings();
 				}),
 			);
 
@@ -68,7 +68,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 						value = value.trim();
 						if (value === '') value = DEFAULT_SETTINGS.executeTemplate;
 						this.plugin.settings.executeTemplate = value;
-						this.plugin.saveData(this.plugin.settings);
+						void this.plugin.saveData(this.plugin.settings);
 					}),
 			);
 
@@ -96,7 +96,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.openFile || DEFAULT_SETTINGS.openFile).onChange((value) => {
 					this.plugin.settings.openFile = value;
-					this.plugin.saveData(this.plugin.settings);
+					void this.plugin.saveData(this.plugin.settings);
 				}),
 			);
 
@@ -114,7 +114,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 						value = value.trim();
 						if (value === '') value = DEFAULT_SETTINGS.workspacePath;
 						this.plugin.settings.workspacePath = value;
-						this.plugin.saveData(this.plugin.settings);
+						void this.plugin.saveData(this.plugin.settings);
 					}),
 			);
 
@@ -132,7 +132,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName('Open VSCode using a `vscode-insiders://` URL').addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.useUrlInsiders).onChange((value) => {
 				this.plugin.settings.useUrlInsiders = value;
-				this.plugin.saveSettings();
+				void this.plugin.saveSettings();
 			});
 		});
 	}
