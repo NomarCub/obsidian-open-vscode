@@ -29,7 +29,7 @@ export default class OpenVSCode extends Plugin {
 	ribbonIcon: HTMLElement;
 	settings: OpenVSCodeSettings;
 
-	async onload() {
+	override async onload() {
 		console.log('Loading ' + this.manifest.name + ' plugin');
 		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 		await this.loadSettings();

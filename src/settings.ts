@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
-	plugin: OpenVSCode;
+	override plugin: OpenVSCode;
 
 	constructor(app: App, plugin: OpenVSCode) {
 		super(app, plugin);
