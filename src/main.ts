@@ -26,15 +26,15 @@ type HotReloadPlugin = Plugin & {
 export default class OpenVSCode extends Plugin {
 	DEV = false;
 
-	ribbonIcon: HTMLElement;
-	settings: OpenVSCodeSettings;
+	ribbonIcon?: HTMLElement;
+	settings!: OpenVSCodeSettings;
 
 	override async onload() {
 		console.log('Loading ' + this.manifest.name + ' plugin');
-		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 		await this.loadSettings();
-
 		this.refreshIconRibbon();
+
+		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 
 		this.addCommand({
 			id: 'open-vscode',
