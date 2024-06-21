@@ -19,9 +19,21 @@
     "plugin:@stylistic/recommended-extends"
   ],
   "rules": {
-    "@stylistic/semi": "off",
     "@stylistic/no-tabs": "off",
     "@stylistic/indent": "off",
+    "@stylistic/member-delimiter-style": [
+      "warn",
+      {
+        "multiline": {
+          "delimiter": "semi",
+          "requireLast": true
+        }
+      }
+    ],
+    "@stylistic/semi": [
+      "warn",
+      "always"
+    ],
     "@stylistic/quotes": [
       "warn",
       "double",
@@ -29,7 +41,6 @@
         "avoidEscape": true
       }
     ],
-    "@stylistic/member-delimiter-style": "off",
     "@stylistic/brace-style": [
       "warn",
       "1tbs"

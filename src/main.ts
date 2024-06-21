@@ -6,8 +6,8 @@ import { exec } from "child_process";
 
 type HotReloadPlugin = Plugin & {
 	// https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
-	enabledPlugins: Set<string>
-}
+	enabledPlugins: Set<string>;
+};
 
 export default class OpenVSCode extends Plugin {
 	static iconId = "vscode-logo";
