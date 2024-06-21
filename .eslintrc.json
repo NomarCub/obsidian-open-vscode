@@ -24,7 +24,7 @@
     "@stylistic/indent": "off",
     "@stylistic/quotes": [
       "warn",
-      "single",
+      "double",
       {
         "avoidEscape": true
       }

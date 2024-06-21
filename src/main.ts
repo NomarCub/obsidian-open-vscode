@@ -1,8 +1,8 @@
-import { FileSystemAdapter, Plugin, addIcon } from 'obsidian';
+import { FileSystemAdapter, Plugin, addIcon } from "obsidian";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as internal from 'obsidian-typings';
-import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
-import { exec } from 'child_process';
+import * as internal from "obsidian-typings";
+import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
+import { exec } from "child_process";
 
 type HotReloadPlugin = Plugin & {
 	// https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
@@ -10,7 +10,7 @@ type HotReloadPlugin = Plugin & {
 }
 
 export default class OpenVSCode extends Plugin {
-	static iconId = 'vscode-logo';
+	static iconId = "vscode-logo";
 	// source: https://simpleicons.org/?q=visual-studio-code
 	static iconSvgContent = `
 <svg role="img" viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ export default class OpenVSCode extends Plugin {
 	settings!: OpenVSCodeSettings;
 
 	override async onload() {
-		console.log('Loading ' + this.manifest.name + ' plugin');
+		console.log("Loading " + this.manifest.name + " plugin");
 		addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
 		await this.loadSettings();
 		this.refreshIconRibbon();
@@ -37,30 +37,30 @@ export default class OpenVSCode extends Plugin {
 		this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 
 		this.addCommand({
-			id: 'open-vscode',
-			name: 'Open as Visual Studio Code workspace',
+			id: "open-vscode",
+			name: "Open as Visual Studio Code workspace",
 			callback: this.openVSCode.bind(this),
 		});
 
 		this.addCommand({
-			id: 'open-vscode-via-url',
-			name: 'Open as Visual Studio Code workspace using a vscode:// URL',
+			id: "open-vscode-via-url",
+			name: "Open as Visual Studio Code workspace using a vscode:// URL",
 			callback: this.openVSCodeUrl.bind(this),
 		});
 
-		const hotReloadPlugin = this.app.plugins.getPlugin('hot-reload') as HotReloadPlugin | null;
+		const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
 		this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
 
 		if (this.DEV) {
 			this.addCommand({
-				id: 'open-vscode-reload',
-				name: 'Reload the plugin in dev',
+				id: "open-vscode-reload",
+				name: "Reload the plugin in dev",
 				callback: this.reload.bind(this),
 			});
 
 			this.addCommand({
-				id: 'open-vscode-reset-settings',
-				name: 'Reset plugins settings to default in dev',
+				id: "open-vscode-reset-settings",
+				name: "Reset plugins settings to default in dev",
 				callback: this.resetSettings.bind(this),
 			});
 		}
@@ -74,15 +74,15 @@ export default class OpenVSCode extends Plugin {
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
-		const filePath = file?.path ?? '';
-		const folderPath = file?.parent?.path ?? '';
+		const filePath = file?.path ?? "";
+		const folderPath = file?.parent?.path ?? "";
 
-		let command = executeTemplate.trim() === '' ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
+		let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
 		command = command
-			.replaceAll('{{vaultpath}}', path)
-			.replaceAll('{{filepath}}', filePath)
-			.replaceAll('{{folderpath}}', folderPath);
-		if (this.DEV) console.log('[openVSCode]', { command });
+			.replaceAll("{{vaultpath}}", path)
+			.replaceAll("{{filepath}}", filePath)
+			.replaceAll("{{folderpath}}", folderPath);
+		if (this.DEV) console.log("[openVSCode]", { command });
 		exec(command, error => {
 			if (error) {
 				console.error(`[openVSCode] exec error: ${error.message}`);
@@ -98,16 +98,16 @@ export default class OpenVSCode extends Plugin {
 
 		const path = this.app.vault.adapter.getBasePath();
 		const file = this.app.workspace.getActiveFile();
-		const filePath = file?.path ?? '';
+		const filePath = file?.path ?? "";
 		if (this.DEV)
-			console.log('[open-vscode]', {
+			console.log("[open-vscode]", {
 				settings: this.settings,
 				path,
 				filePath,
 			});
 
 		// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-		const protocol = useUrlInsiders ? 'vscode-insiders://' : 'vscode://';
+		const protocol = useUrlInsiders ? "vscode-insiders://" : "vscode://";
 		let url = `${protocol}file/${path}`;
 
 		if (openFile) {
@@ -125,16 +125,16 @@ export default class OpenVSCode extends Plugin {
 			*/
 
 			// HACK: first open the _workspace_ to bring the correct window to the front....
-			const workspacePath = this.settings.workspacePath.replaceAll('{{vaultpath}}', path);
+			const workspacePath = this.settings.workspacePath.replaceAll("{{vaultpath}}", path);
 			window.open(`vscode://file/${workspacePath}`);
 
 			// ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
 			setTimeout(() => {
-				if (this.DEV) console.log('[openVSCode]', { url });
+				if (this.DEV) console.log("[openVSCode]", { url });
 				window.open(url);
 			}, 200); // anecdotally, this seems to be the min required for the workspace to activate
 		} else {
-			if (this.DEV) console.log('[openVSCode]', { url });
+			if (this.DEV) console.log("[openVSCode]", { url });
 			window.open(url);
 		}
 	}
@@ -150,8 +150,8 @@ export default class OpenVSCode extends Plugin {
 	refreshIconRibbon = () => {
 		this.ribbonIcon?.remove();
 		if (this.settings.ribbonIcon) {
-			this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, 'VSCode', () => {
-				const ribbonCommand = this.settings.ribbonCommandUsesCode ? 'openVSCode' : 'openVSCodeUrl';
+			this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VSCode", () => {
+				const ribbonCommand = this.settings.ribbonCommandUsesCode ? "openVSCode" : "openVSCodeUrl";
 				this[ribbonCommand]();
 			});
 		}
