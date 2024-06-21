@@ -20,7 +20,7 @@
   ],
   "rules": {
     "@stylistic/no-tabs": "off",
-    "@stylistic/indent": "off",
+    "@stylistic/indent": ["warn", "tab"],
     "@stylistic/member-delimiter-style": [
       "warn",
       {
