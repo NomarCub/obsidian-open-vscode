@@ -4,8 +4,15 @@ import * as internal from 'obsidian-typings';
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from './settings';
 import { exec } from 'child_process';
 
-// source: https://simpleicons.org/?q=visual-studio-code
-const svg = `
+type HotReloadPlugin = Plugin & {
+	// https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
+	enabledPlugins: Set<string>
+}
+
+export default class OpenVSCode extends Plugin {
+	static iconId = "vscode-logo";
+	// source: https://simpleicons.org/?q=visual-studio-code
+	static iconSvgContent = `
 <svg role="img" viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg">
     <title>Visual Studio Code</title>
@@ -16,14 +23,6 @@ const svg = `
 </svg>
 `;
 
-addIcon('vscode-logo', svg);
-
-type HotReloadPlugin = Plugin & {
-	// https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
-	enabledPlugins: Set<string>
-}
-
-export default class OpenVSCode extends Plugin {
 	DEV = false;
 
 	ribbonIcon?: HTMLElement;
@@ -31,6 +30,7 @@ export default class OpenVSCode extends Plugin {
 
 	override async onload() {
 		console.log('Loading ' + this.manifest.name + ' plugin');
+		addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
 		await this.loadSettings();
 		this.refreshIconRibbon();
 
@@ -150,7 +150,7 @@ export default class OpenVSCode extends Plugin {
 	refreshIconRibbon = () => {
 		this.ribbonIcon?.remove();
 		if (this.settings.ribbonIcon) {
-			this.ribbonIcon = this.addRibbonIcon('vscode-logo', 'VSCode', () => {
+			this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, 'VSCode', () => {
 				const ribbonCommand = this.settings.ribbonCommandUsesCode ? 'openVSCode' : 'openVSCodeUrl';
 				this[ribbonCommand]();
 			});
@@ -172,11 +172,11 @@ export default class OpenVSCode extends Plugin {
 		const plugins = this.app.plugins;
 		await plugins.disablePlugin(id);
 		await plugins.enablePlugin(id);
-		console.log('[open-vscode] reloaded', this);
+		console.log(`[${this.manifest.id}] reloaded`, this);
 	}
 
 	async resetSettings() {
-		console.log('[open-vscode]', { old: this.settings, DEFAULT_SETTINGS });
+		console.log(`[${this.manifest.id}]`, { old: this.settings, default: DEFAULT_SETTINGS });
 		this.settings = DEFAULT_SETTINGS;
 		await this.saveData(this.settings);
 	}
