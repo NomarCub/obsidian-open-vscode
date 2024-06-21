@@ -6,6 +6,7 @@
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
+    "skipLibCheck": true,
     "noImplicitOverride": true,
     "moduleResolution": "node",
     "importHelpers": true,
