@@ -21,6 +21,6 @@
 		"obsidian": "~1.5.7-1",
 		"obsidian-typings": "^1.1.6",
 		"tslib": "2.6.2",
-		"typescript": "5.4.3"
+		"typescript": "5.5.2"
 	}
 }
