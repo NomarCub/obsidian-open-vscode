@@ -10,7 +10,7 @@ type HotReloadPlugin = Plugin & {
 }
 
 export default class OpenVSCode extends Plugin {
-	static iconId = "vscode-logo";
+	static iconId = 'vscode-logo';
 	// source: https://simpleicons.org/?q=visual-studio-code
 	static iconSvgContent = `
 <svg role="img" viewBox="0 0 24 24"
@@ -83,7 +83,7 @@ export default class OpenVSCode extends Plugin {
 			.replaceAll('{{filepath}}', filePath)
 			.replaceAll('{{folderpath}}', folderPath);
 		if (this.DEV) console.log('[openVSCode]', { command });
-		exec(command, (error) => {
+		exec(command, error => {
 			if (error) {
 				console.error(`[openVSCode] exec error: ${error.message}`);
 			}

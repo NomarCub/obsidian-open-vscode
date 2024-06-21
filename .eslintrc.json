@@ -1,19 +1,42 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "project": true
+  },
   "env": {
     "node": true
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "@stylistic"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/strict-type-checked"
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:@stylistic/recommended-extends"
   ],
-  "parserOptions": {
-    "sourceType": "module",
-    "project": true
+  "rules": {
+    "@stylistic/semi": "off",
+    "@stylistic/no-tabs": "off",
+    "@stylistic/indent": "off",
+    "@stylistic/quotes": [
+      "warn",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "@stylistic/member-delimiter-style": "off",
+    "@stylistic/brace-style": [
+      "warn",
+      "1tbs"
+    ],
+    "@stylistic/arrow-parens": [
+      "warn",
+      "as-needed"
+    ]
   }
 }

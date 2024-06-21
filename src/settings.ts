@@ -46,7 +46,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Ribbon opens via `code` command')
-			.setDesc(`Toggle this OFF if you'd prefer that the Ribbon Icon opens VSCode via URL.`)
+			.setDesc("Toggle this OFF if you'd prefer that the Ribbon Icon opens VSCode via URL.")
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.ribbonCommandUsesCode)
 				.onChange(value => {
