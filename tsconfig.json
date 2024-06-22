@@ -7,11 +7,11 @@
     "target": "ES6",
     "allowJs": true,
     "skipLibCheck": true,
-    "noImplicitOverride": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "isolatedModules": true,
     "strict": true,
+    "noImplicitOverride": true,
     "lib": [
       "DOM",
       "ES5",

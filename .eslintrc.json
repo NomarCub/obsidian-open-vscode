@@ -19,8 +19,10 @@
     "plugin:@stylistic/recommended-extends"
   ],
   "rules": {
-    "@stylistic/no-tabs": "off",
-    "@stylistic/indent": ["warn", "tab"],
+    "@stylistic/indent": [
+      "warn",
+      4
+    ],
     "@stylistic/member-delimiter-style": [
       "warn",
       {
