@@ -19,6 +19,15 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     useUrlInsiders: false,
 };
 
+export const GOTO_LINE_SETTINGS: OpenVSCodeSettings = {
+    ribbonIcon: true,
+    ribbonCommandUsesCode: true,
+    executeTemplate: 'code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}"',
+    openFile: true,
+    workspacePath: "{{vaultpath}}",
+    useUrlInsiders: false,
+};
+
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
     override plugin: OpenVSCode;
 
@@ -59,7 +68,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Template for executing the `code` command")
-            .setDesc('You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative). Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`')
+            .setDesc('You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`. Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`')
             .addText(text => text
                 .setPlaceholder(DEFAULT_SETTINGS.executeTemplate)
                 .setValue(this.plugin.settings.executeTemplate || DEFAULT_SETTINGS.executeTemplate)

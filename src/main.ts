@@ -1,6 +1,6 @@
-import { FileSystemAdapter, Plugin, addIcon } from "obsidian";
+import { FileSystemAdapter, Plugin, addIcon, MarkdownView } from "obsidian";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as internal from "obsidian-typings";
+import * as external from "obsidian-typings";
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
 import { exec } from "child_process";
 
@@ -77,11 +77,18 @@ export default class OpenVSCode extends Plugin {
         const filePath = file?.path ?? "";
         const folderPath = file?.parent?.path ?? "";
 
+        const cursor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
+        // VSCode line and column are 1-based
+        const line = (cursor?.line ?? 0) + 1;
+        const ch = (cursor?.ch ?? 0) + 1;
+
         let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
         command = command
             .replaceAll("{{vaultpath}}", path)
             .replaceAll("{{filepath}}", filePath)
-            .replaceAll("{{folderpath}}", folderPath);
+            .replaceAll("{{folderpath}}", folderPath)
+            .replaceAll("{{line}}", line.toString())
+            .replaceAll("{{ch}}", ch.toString());
         if (this.DEV) console.log("[openVSCode]", { command });
         exec(command, error => {
             if (error) {
