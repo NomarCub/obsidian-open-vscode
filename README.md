@@ -88,6 +88,7 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 
 [Toggle ribbon setting](https://github.com/NomarCub/obsidian-open-vscode/pull/1) by [ozntel](https://github.com/ozntel).  
 [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [ptim](https://github.com/ptim).
+[Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moyf](https://github.com/Moyf).  
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
 The icon is from [Simple Icons](https://simpleicons.org/?q=visual-studio-code) ([SVG](https://simpleicons.org/icons/visualstudiocode.svg)).
