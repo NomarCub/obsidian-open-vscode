@@ -32,8 +32,8 @@ Note that on MacOS, a full path to the VSCode executable is required (generally 
 You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`.
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
-And if you want to jump to the line and character, you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.
-( `:{{ch}}` could be omitted if you don't want to jump to a specific character.)
+If you want to jump to the line (and character), you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.  
+See also: [VSCode CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
 
 ### Settings for `open-vscode-via-url`
 
