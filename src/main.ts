@@ -1,6 +1,6 @@
 import { FileSystemAdapter, Plugin, addIcon, MarkdownView } from "obsidian";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as external from "obsidian-typings";
+import * as obsidianInternal from "obsidian-typings";
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
 import { exec } from "child_process";
 
