@@ -19,15 +19,6 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     useUrlInsiders: false,
 };
 
-export const GOTO_LINE_SETTINGS: OpenVSCodeSettings = {
-    ribbonIcon: true,
-    ribbonCommandUsesCode: true,
-    executeTemplate: 'code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}"',
-    openFile: true,
-    workspacePath: "{{vaultpath}}",
-    useUrlInsiders: false,
-};
-
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
     override plugin: OpenVSCode;
 
