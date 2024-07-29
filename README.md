@@ -29,8 +29,11 @@ You can template the command opening VSCode however you like with its [provided 
 
 Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code").
 
-You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative).
+You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`.
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
+
+If you want to jump to the line (and character), you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.  
+See also: [VSCode CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
 
 ### Settings for `open-vscode-via-url`
 
@@ -85,6 +88,7 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 
 [Toggle ribbon setting](https://github.com/NomarCub/obsidian-open-vscode/pull/1) by [ozntel](https://github.com/ozntel).  
 [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [ptim](https://github.com/ptim).
+[Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moyf](https://github.com/Moyf).  
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
 The icon is from [Simple Icons](https://simpleicons.org/?q=visual-studio-code) ([SVG](https://simpleicons.org/icons/visualstudiocode.svg)).
