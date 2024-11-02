@@ -1,4 +1,4 @@
-import { FileSystemAdapter, Plugin, addIcon, MarkdownView } from "obsidian";
+import { FileSystemAdapter, Plugin, addIcon, MarkdownView, Menu, TAbstractFile } from "obsidian";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as obsidianInternal from "obsidian-typings";
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
@@ -47,6 +47,10 @@ export default class OpenVSCode extends Plugin {
             name: "Open as Visual Studio Code workspace using a vscode:// URL",
             callback: this.openVSCodeUrl.bind(this),
         });
+        
+        this.registerEvent(
+            this.app.workspace.on('file-menu', this.fileMenuHandler)
+        );
 
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
         this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
@@ -66,7 +70,7 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    openVSCode() {
+    openVSCode(fileContextMenuPath: string = "") {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
@@ -74,8 +78,8 @@ export default class OpenVSCode extends Plugin {
 
         const path = this.app.vault.adapter.getBasePath();
         const file = this.app.workspace.getActiveFile();
-        const filePath = file?.path ?? "";
-        const folderPath = file?.parent?.path ?? "";
+        let filePath = file?.path ?? "";
+        let folderPath = file?.parent?.path ?? "";
 
         const cursor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
         // VSCode line and column are 1-based
@@ -83,12 +87,17 @@ export default class OpenVSCode extends Plugin {
         const ch = (cursor?.ch ?? 0) + 1;
 
         let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
+        if (fileContextMenuPath) {
+            filePath = fileContextMenuPath;
+            folderPath = fileContextMenuPath;
+        }
         command = command
             .replaceAll("{{vaultpath}}", path)
             .replaceAll("{{filepath}}", filePath)
             .replaceAll("{{folderpath}}", folderPath)
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
+        
         if (this.DEV) console.log("[openVSCode]", { command });
         exec(command, error => {
             if (error) {
@@ -163,6 +172,14 @@ export default class OpenVSCode extends Plugin {
             });
         }
     };
+
+    fileMenuHandler = (menu: Menu, file: TAbstractFile) => {
+        menu.addItem((item) => {
+            item.setTitle('Open in VS Code')
+                .setIcon("folder-open")
+                .onClick(() => this.openVSCode(file.path));
+        });
+    }
 
     /**
      * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
