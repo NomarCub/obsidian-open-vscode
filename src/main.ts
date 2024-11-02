@@ -174,6 +174,10 @@ export default class OpenVSCode extends Plugin {
     };
 
     fileMenuHandler = (menu: Menu, file: TAbstractFile) => {
+        if (!this.settings.showFileContextMenuItem) {
+            return;
+        }
+    
         menu.addItem((item) => {
             item.setTitle('Open in VS Code')
                 .setIcon("folder-open")

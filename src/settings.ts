@@ -4,6 +4,7 @@ import OpenVSCode from "./main";
 export interface OpenVSCodeSettings {
     ribbonIcon: boolean;
     ribbonCommandUsesCode: boolean;
+    showFileContextMenuItem: boolean;
     executeTemplate: string;
     openFile: boolean;
     workspacePath: string;
@@ -13,6 +14,7 @@ export interface OpenVSCodeSettings {
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
     ribbonCommandUsesCode: true,
+    showFileContextMenuItem: true,
     executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
     openFile: true,
     workspacePath: "{{vaultpath}}",
@@ -54,6 +56,17 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     void this.plugin.saveSettings();
                 }),
             );
+
+        new Setting(containerEl)
+			.setName('Display "Open in VS Code" option for files/folders')
+			.setDesc('Toggle this OFF to hide the "Open in VS Code" option when right-clicking a file/folder.')
+			.addToggle((toggle) => toggle
+                .setValue(this.plugin.settings.showFileContextMenuItem)
+                .onChange((value) => {
+					this.plugin.settings.showFileContextMenuItem = value;
+					void this.plugin.saveSettings();
+				}),
+			);
 
         containerEl.createEl("h3", { text: "Open via `code` CLI settings" });
 
