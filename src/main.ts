@@ -180,7 +180,7 @@ export default class OpenVSCode extends Plugin {
 
         menu.addItem(item => {
             item.setTitle("Open in VS Code")
-                .setIcon("folder-open")
+                .setIcon(OpenVSCode.iconId)
                 .onClick(() => {
                     this.openVSCode(file.path);
                 });
