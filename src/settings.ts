@@ -48,7 +48,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
-            .setName("Ribbon opens via `code` command")
+            .setName("Ribbon opens via 'code' command")
             .setDesc("Toggle this OFF if you'd prefer that the Ribbon Icon opens VSCode via URL.")
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.ribbonCommandUsesCode)
@@ -69,11 +69,11 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             );
 
-        containerEl.createEl("h3", { text: "Open via `code` CLI settings" });
+        containerEl.createEl("h3", { text: "Open via 'code' CLI settings" });
 
         new Setting(containerEl)
-            .setName("Template for executing the `code` command")
-            .setDesc('You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`. Note that on MacOS, a full path to the VSCode executable is required (generally "/usr/local/bin/code"). Example: `/usr/local/bin/code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`')
+            .setName("Template for executing the 'code' command")
+            .setDesc("You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'. Note that on MacOS, a full path to the VSCode executable is required (generally '/usr/local/bin/code'). Example: \"'/usr/local/bin/code' '{{vaultpath}}' '{{vaultpath}}/{{filepath}}'\"")
             .addText(text => text
                 .setPlaceholder(DEFAULT_SETTINGS.executeTemplate)
                 .setValue(this.plugin.settings.executeTemplate || DEFAULT_SETTINGS.executeTemplate)
@@ -85,18 +85,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             );
 
-        containerEl.createEl("h3", { text: "Open via `vscode://` URL settings" });
-
-        const openViaUrlCaveat = containerEl.createEl("p");
-        const openViaUrlCaveatEm = openViaUrlCaveat.createEl("em", {
-            text: `⚠️ This setting is not recommended for Windows users due to
-              UX issues caused by security enhancements in VSCode on Windows. More information: `,
-        });
-        openViaUrlCaveatEm.appendChild(createEl("a", {
-            text: "Open in VSCode Readme",
-            href: "https://github.com/NomarCub/obsidian-open-vscode/blob/master/README.md#caveats-regarding-the-url-command-for-windows-users",
-        }));
-        openViaUrlCaveatEm.appendText(".");
+        containerEl.createEl("h3", { text: "Open via 'vscode://' URL settings" });
 
         new Setting(containerEl)
             .setName("Open current file")
@@ -132,7 +121,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             .appendText(".");
 
         new Setting(containerEl)
-            .setName("Open VSCode using a `vscode-insiders://` URL")
+            .setName("Open VSCode using a 'vscode-insiders://' URL")
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.useUrlInsiders)
                 .onChange(value => {

@@ -3,7 +3,7 @@
 This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button, a file explorer context menu and two commands to open your vault as a Visual Studio Code workspace:
 
 - `open-vscode`: Uses `child_process` to launch VSCode with the `code` command. Currently, this is the command bound to the ribbon button.
-- `open-vscode-via-url`: Open VSCode using a `vscode://` URL *(Windows users, please see [notes regarding the UX of this command](#caveats-regarding-the-url-command-for-windows-users))*
+- `open-vscode-via-url`: Open VSCode using a `vscode://` URL
 
 It's functionality is probably made redundant now using the [Shell commands](https://github.com/Taitava/obsidian-shellcommands) and [Customizable Sidebar](https://github.com/phibr0/obsidian-customizable-sidebar) (or [Buttons](https://github.com/shabegom/buttons)) plugins, but it'll be maintained for the foreseeable future.
 
@@ -47,24 +47,9 @@ On some systems, this may be faster than using the `child_process` approach.
 
   Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [Multi Root workspace file](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces)
 
-- **Open VSCode using a `vscode-insiders://` URL**
+- **Open VSCode using a `vscode://` URL**
 
-The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
-
-### Caveats regarding the URL command for Windows users
-
-TLDR; We recommend that Windows users prefer the `open-vscode` command (and not the URL one).
-
-Due to security updates in VSCode, the user experience of using opening VSCode via URL comes with some known issues!
-
-On Windows, when opening via URL, you are prompted to allow VSCode to access the file. At present there's no option in VSCode to whitelist safe locations (ie your Obsidian vault), so you get this dialog every time ☹️.
-
-Worse, if you are opening via URL, *and* have toggled the "Open File" setting on, then VSCode will attempt to open a *second* instance of VSCode, and will warn that there's another instance of Code running but not responding.
-
-If this issue affects you, please consider watching and voting for the following VSCode issues:
-
-- [Prompt users when opening vscode://file/... URIs · Issue #95252 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95252)
-- [URL protocol: confirmation dialog · Issue #95670 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95670)
+The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 ## Installation
 

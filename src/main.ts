@@ -28,6 +28,8 @@ export default class OpenVSCode extends Plugin {
     ribbonIcon?: HTMLElement;
     settings!: OpenVSCodeSettings;
 
+    readonly logTag = `[${this.manifest.id}]`;
+
     override async onload(): Promise<void> {
         console.log("Loading " + this.manifest.name + " plugin");
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
@@ -93,10 +95,10 @@ export default class OpenVSCode extends Plugin {
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
 
-        if (this.DEV) console.log("[openVSCode]", { command });
+        if (this.DEV) console.log(this.logTag, { command });
         exec(command, error => {
             if (error) {
-                console.error(`[openVSCode] exec error: ${error.message}`);
+                console.error(`${this.logTag} exec error: ${error.message}`);
             }
         });
     }
@@ -111,15 +113,11 @@ export default class OpenVSCode extends Plugin {
         const file = this.app.workspace.getActiveFile();
         const filePath = file?.path ?? "";
         if (this.DEV)
-            console.log("[open-vscode]", {
-                settings: this.settings,
-                path,
-                filePath,
-            });
+            console.log(this.logTag, { settings: this.settings, path, filePath });
 
         // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-        const protocol = useUrlInsiders ? "vscode-insiders://" : "vscode://";
-        let url = `${protocol}file/${path}`;
+        const protocol = useUrlInsiders ? "vscode-insiders" : "vscode";
+        let url = `${protocol}://file/${path}`;
 
         if (openFile) {
             url += `/${filePath}`;
@@ -137,15 +135,15 @@ export default class OpenVSCode extends Plugin {
 
             // HACK: first open the _workspace_ to bring the correct window to the front....
             const workspacePath = this.settings.workspacePath.replaceAll("{{vaultpath}}", path);
-            window.open(`vscode://file/${workspacePath}`);
+            window.open(`${protocol}://file/${workspacePath}`);
 
             // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
             setTimeout(() => {
-                if (this.DEV) console.log("[openVSCode]", { url });
+                if (this.DEV) console.log(this.logTag, { url });
                 window.open(url);
             }, 200); // anecdotally, this seems to be the min required for the workspace to activate
         } else {
-            if (this.DEV) console.log("[openVSCode]", { url });
+            if (this.DEV) console.log(this.logTag, { url });
             window.open(url);
         }
     }
@@ -197,11 +195,11 @@ export default class OpenVSCode extends Plugin {
         const plugins = this.app.plugins;
         await plugins.disablePlugin(id);
         await plugins.enablePlugin(id);
-        console.log(`[${this.manifest.id}] reloaded`, this);
+        console.log(`${this.logTag} reloaded`, this);
     }
 
     async resetSettings(): Promise<void> {
-        console.log(`[${this.manifest.id}]`, { old: this.settings, default: DEFAULT_SETTINGS });
+        console.log(this.logTag, { old: this.settings, default: DEFAULT_SETTINGS });
         this.settings = DEFAULT_SETTINGS;
         await this.saveData(this.settings);
     }
