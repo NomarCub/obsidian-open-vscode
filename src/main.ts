@@ -28,7 +28,7 @@ export default class OpenVSCode extends Plugin {
     ribbonIcon?: HTMLElement;
     settings!: OpenVSCodeSettings;
 
-    override async onload() {
+    override async onload(): Promise<void> {
         console.log("Loading " + this.manifest.name + " plugin");
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
@@ -70,7 +70,7 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()) {
+    openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()): void {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
@@ -101,7 +101,7 @@ export default class OpenVSCode extends Plugin {
         });
     }
 
-    openVSCodeUrl() {
+    openVSCodeUrl(): void {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
@@ -150,15 +150,15 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    async loadSettings() {
+    async loadSettings(): Promise<void> {
         this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as OpenVSCodeSettings;
     }
 
-    async saveSettings() {
+    async saveSettings(): Promise<void> {
         await this.saveData(this.settings);
     }
 
-    refreshIconRibbon() {
+    refreshIconRibbon(): void {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VSCode", () => {
@@ -168,7 +168,7 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    fileMenuHandler(menu: Menu, file: TAbstractFile) {
+    fileMenuHandler(menu: Menu, file: TAbstractFile): void {
         if (!this.settings.showFileContextMenuItem) {
             return;
         }
@@ -192,7 +192,7 @@ export default class OpenVSCode extends Plugin {
      * > You can also automate this process from within the plugin itself, by
      * > including a command that does something like this:
      */
-    async reload() {
+    async reload(): Promise<void> {
         const id = this.manifest.id;
         const plugins = this.app.plugins;
         await plugins.disablePlugin(id);
@@ -200,7 +200,7 @@ export default class OpenVSCode extends Plugin {
         console.log(`[${this.manifest.id}] reloaded`, this);
     }
 
-    async resetSettings() {
+    async resetSettings(): Promise<void> {
         console.log(`[${this.manifest.id}]`, { old: this.settings, default: DEFAULT_SETTINGS });
         this.settings = DEFAULT_SETTINGS;
         await this.saveData(this.settings);
