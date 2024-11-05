@@ -49,7 +49,7 @@ export default class OpenVSCode extends Plugin {
         });
 
         this.registerEvent(
-            this.app.workspace.on("file-menu", this.fileMenuHandler)
+            this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this))
         );
 
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
@@ -158,7 +158,7 @@ export default class OpenVSCode extends Plugin {
         await this.saveData(this.settings);
     }
 
-    refreshIconRibbon = () => {
+    refreshIconRibbon() {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VSCode", () => {
@@ -166,9 +166,9 @@ export default class OpenVSCode extends Plugin {
                 this[ribbonCommand]();
             });
         }
-    };
+    }
 
-    fileMenuHandler = (menu: Menu, file: TAbstractFile) => {
+    fileMenuHandler(menu: Menu, file: TAbstractFile) {
         if (!this.settings.showFileContextMenuItem) {
             return;
         }
@@ -180,7 +180,7 @@ export default class OpenVSCode extends Plugin {
                     this.openVSCode(file);
                 });
         });
-    };
+    }
 
     /**
      * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
