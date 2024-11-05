@@ -49,6 +49,7 @@ On some systems, this may be faster than using the `child_process` approach.
 
 - **Open VSCode using a `vscode://` URL**
 
+See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
 The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 ## Installation
