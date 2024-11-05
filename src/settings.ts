@@ -58,15 +58,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
-			.setName('Display "Open in VS Code" option for files/folders')
-			.setDesc('Toggle this OFF to hide the "Open in VS Code" option when right-clicking a file/folder.')
-			.addToggle((toggle) => toggle
+            .setName('Display "Open in VS Code" option for files/folders')
+            .setDesc('Toggle this OFF to hide the "Open in VS Code" option when right-clicking a file/folder.')
+            .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.showFileContextMenuItem)
-                .onChange((value) => {
-					this.plugin.settings.showFileContextMenuItem = value;
-					void this.plugin.saveSettings();
-				}),
-			);
+                .onChange(value => {
+                    this.plugin.settings.showFileContextMenuItem = value;
+                    void this.plugin.saveSettings();
+                }),
+            );
 
         containerEl.createEl("h3", { text: "Open via `code` CLI settings" });
 

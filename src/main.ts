@@ -47,9 +47,9 @@ export default class OpenVSCode extends Plugin {
             name: "Open as Visual Studio Code workspace using a vscode:// URL",
             callback: this.openVSCodeUrl.bind(this),
         });
-        
+
         this.registerEvent(
-            this.app.workspace.on('file-menu', this.fileMenuHandler)
+            this.app.workspace.on("file-menu", this.fileMenuHandler)
         );
 
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
@@ -70,7 +70,7 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    openVSCode(fileContextMenuPath: string = "") {
+    openVSCode(fileContextMenuPath = "") {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
@@ -97,7 +97,7 @@ export default class OpenVSCode extends Plugin {
             .replaceAll("{{folderpath}}", folderPath)
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
-        
+
         if (this.DEV) console.log("[openVSCode]", { command });
         exec(command, error => {
             if (error) {
@@ -177,13 +177,15 @@ export default class OpenVSCode extends Plugin {
         if (!this.settings.showFileContextMenuItem) {
             return;
         }
-    
-        menu.addItem((item) => {
-            item.setTitle('Open in VS Code')
+
+        menu.addItem(item => {
+            item.setTitle("Open in VS Code")
                 .setIcon("folder-open")
-                .onClick(() => this.openVSCode(file.path));
+                .onClick(() => {
+                    this.openVSCode(file.path);
+                });
         });
-    }
+    };
 
     /**
      * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
