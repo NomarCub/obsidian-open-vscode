@@ -12,10 +12,10 @@
 	"author": "NomarCub",
 	"license": "MIT",
 	"devDependencies": {
-		"@stylistic/eslint-plugin": "^2.2.2",
+		"@stylistic/eslint-plugin": "^2.10.1",
 		"@types/node": "20.11.1",
-		"@typescript-eslint/eslint-plugin": "^7.13.1",
-		"@typescript-eslint/parser": "^7.13.1",
+		"@typescript-eslint/eslint-plugin": "^8.13.0",
+		"@typescript-eslint/parser": "^8.13.0",
 		"builtin-modules": "4.0.0",
 		"esbuild": "0.21.5",
 		"eslint": "^8.57.1",
