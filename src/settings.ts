@@ -3,6 +3,7 @@ import OpenVSCode from "./main";
 
 export interface OpenVSCodeSettings {
     ribbonIcon: boolean;
+    // use code command if true, otherwise open URL
     ribbonCommandUsesCode: boolean;
     showFileContextMenuItem: boolean;
     executeTemplate: string;
