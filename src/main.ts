@@ -70,16 +70,15 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    openVSCode(fileContextMenuPath = "") {
+    openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()) {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
         const { executeTemplate } = this.settings;
 
-        const path = this.app.vault.adapter.getBasePath();
-        const file = this.app.workspace.getActiveFile();
-        let filePath = file?.path ?? "";
-        let folderPath = file?.parent?.path ?? "";
+        const vaultPath = this.app.vault.adapter.getBasePath();
+        const filePath = file?.path ?? "";
+        const folderPath = file?.parent?.path ?? "";
 
         const cursor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
         // VSCode line and column are 1-based
@@ -87,12 +86,8 @@ export default class OpenVSCode extends Plugin {
         const ch = (cursor?.ch ?? 0) + 1;
 
         let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
-        if (fileContextMenuPath) {
-            filePath = fileContextMenuPath;
-            folderPath = fileContextMenuPath;
-        }
         command = command
-            .replaceAll("{{vaultpath}}", path)
+            .replaceAll("{{vaultpath}}", vaultPath)
             .replaceAll("{{filepath}}", filePath)
             .replaceAll("{{folderpath}}", folderPath)
             .replaceAll("{{line}}", line.toString())
@@ -182,7 +177,7 @@ export default class OpenVSCode extends Plugin {
             item.setTitle("Open in VS Code")
                 .setIcon(OpenVSCode.iconId)
                 .onClick(() => {
-                    this.openVSCode(file.path);
+                    this.openVSCode(file);
                 });
         });
     };
