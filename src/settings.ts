@@ -104,7 +104,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
         const workspacePathSetting = new Setting(containerEl)
             .setName("Path to VSCode Workspace")
-            .setDesc('Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a Multi Root workspace file: ')
+            .setDesc('Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a ')
             .addText(text => text
                 .setPlaceholder(DEFAULT_SETTINGS.workspacePath)
                 .setValue(this.plugin.settings.workspacePath || DEFAULT_SETTINGS.workspacePath)
@@ -116,13 +116,10 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             );
 
-        const multiRootWorkspacesLink = "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces";
-        workspacePathSetting.descEl
-            .appendChild(createEl("a", {
-                href: multiRootWorkspacesLink,
-                text: multiRootWorkspacesLink,
-            }))
-            .appendText(".");
+        workspacePathSetting.descEl.appendChild(createEl("a", {
+            text: "multi-root workspace",
+            href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
+        })).appendText(".");
 
         new Setting(containerEl)
             .setName("Open VSCode using a 'vscode-insiders://' URL")

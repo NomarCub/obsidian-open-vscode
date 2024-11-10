@@ -45,7 +45,7 @@ On some systems, this may be faster than using the `child_process` approach.
 
 - **Path to VSCode Workspace**
 
-  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [Multi Root workspace file](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces)
+  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
 
 - **Open VSCode using a `vscode://` URL**
 
