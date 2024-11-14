@@ -11,6 +11,9 @@ You can use VSCode for various purposes with your vault, such as for git version
 
 ![video showcase](https://user-images.githubusercontent.com/5298006/125867690-c11f4396-e31b-4232-9ea5-822bf729df9a.gif)
 
+Context menu in file navigation.  
+![context menu](https://github.com/user-attachments/assets/a3ba9046-2263-41cf-bdc5-706b95484aba)
+
 The icons work with light and dark mode.
 
 ![light and dark](https://user-images.githubusercontent.com/5298006/125868293-96c6f541-0604-4238-9fc3-05ff6c2e08df.gif)
