@@ -1,4 +1,4 @@
-import { FileSystemAdapter, Plugin, addIcon, MarkdownView } from "obsidian";
+import { FileSystemAdapter, Plugin, addIcon, MarkdownView, Menu, TAbstractFile } from "obsidian";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as obsidianInternal from "obsidian-typings";
 import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
@@ -28,7 +28,9 @@ export default class OpenVSCode extends Plugin {
     ribbonIcon?: HTMLElement;
     settings!: OpenVSCodeSettings;
 
-    override async onload() {
+    readonly logTag = `[${this.manifest.id}]`;
+
+    override async onload(): Promise<void> {
         console.log("Loading " + this.manifest.name + " plugin");
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
@@ -48,6 +50,10 @@ export default class OpenVSCode extends Plugin {
             callback: this.openVSCodeUrl.bind(this),
         });
 
+        this.registerEvent(
+            this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this))
+        );
+
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
         this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
 
@@ -66,14 +72,13 @@ export default class OpenVSCode extends Plugin {
         }
     }
 
-    openVSCode() {
+    openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()): void {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
         const { executeTemplate } = this.settings;
 
-        const path = this.app.vault.adapter.getBasePath();
-        const file = this.app.workspace.getActiveFile();
+        const vaultPath = this.app.vault.adapter.getBasePath();
         const filePath = file?.path ?? "";
         const folderPath = file?.parent?.path ?? "";
 
@@ -84,20 +89,21 @@ export default class OpenVSCode extends Plugin {
 
         let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
         command = command
-            .replaceAll("{{vaultpath}}", path)
+            .replaceAll("{{vaultpath}}", vaultPath)
             .replaceAll("{{filepath}}", filePath)
             .replaceAll("{{folderpath}}", folderPath)
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
-        if (this.DEV) console.log("[openVSCode]", { command });
+
+        if (this.DEV) console.log(this.logTag, { command });
         exec(command, error => {
             if (error) {
-                console.error(`[openVSCode] exec error: ${error.message}`);
+                console.error(`${this.logTag} exec error: ${error.message}`);
             }
         });
     }
 
-    openVSCodeUrl() {
+    openVSCodeUrl(): void {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
@@ -107,15 +113,11 @@ export default class OpenVSCode extends Plugin {
         const file = this.app.workspace.getActiveFile();
         const filePath = file?.path ?? "";
         if (this.DEV)
-            console.log("[open-vscode]", {
-                settings: this.settings,
-                path,
-                filePath,
-            });
+            console.log(this.logTag, { settings: this.settings, path, filePath });
 
         // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-        const protocol = useUrlInsiders ? "vscode-insiders://" : "vscode://";
-        let url = `${protocol}file/${path}`;
+        const protocol = useUrlInsiders ? "vscode-insiders" : "vscode";
+        let url = `${protocol}://file/${path}`;
 
         if (openFile) {
             url += `/${filePath}`;
@@ -133,36 +135,50 @@ export default class OpenVSCode extends Plugin {
 
             // HACK: first open the _workspace_ to bring the correct window to the front....
             const workspacePath = this.settings.workspacePath.replaceAll("{{vaultpath}}", path);
-            window.open(`vscode://file/${workspacePath}`);
+            window.open(`${protocol}://file/${workspacePath}`);
 
             // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
             setTimeout(() => {
-                if (this.DEV) console.log("[openVSCode]", { url });
+                if (this.DEV) console.log(this.logTag, { url });
                 window.open(url);
             }, 200); // anecdotally, this seems to be the min required for the workspace to activate
         } else {
-            if (this.DEV) console.log("[openVSCode]", { url });
+            if (this.DEV) console.log(this.logTag, { url });
             window.open(url);
         }
     }
 
-    async loadSettings() {
+    async loadSettings(): Promise<void> {
         this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as OpenVSCodeSettings;
     }
 
-    async saveSettings() {
+    async saveSettings(): Promise<void> {
         await this.saveData(this.settings);
     }
 
-    refreshIconRibbon = () => {
+    refreshIconRibbon(): void {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VSCode", () => {
-                const ribbonCommand = this.settings.ribbonCommandUsesCode ? "openVSCode" : "openVSCodeUrl";
-                this[ribbonCommand]();
+                if (this.settings.ribbonCommandUsesCode) this.openVSCode();
+                else this.openVSCodeUrl();
             });
         }
-    };
+    }
+
+    fileMenuHandler(menu: Menu, file: TAbstractFile): void {
+        if (!this.settings.showFileContextMenuItem) {
+            return;
+        }
+
+        menu.addItem(item => {
+            item.setTitle("Open in VS Code")
+                .setIcon(OpenVSCode.iconId)
+                .onClick(() => {
+                    this.openVSCode(file);
+                });
+        });
+    }
 
     /**
      * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
@@ -174,16 +190,16 @@ export default class OpenVSCode extends Plugin {
      * > You can also automate this process from within the plugin itself, by
      * > including a command that does something like this:
      */
-    async reload() {
+    async reload(): Promise<void> {
         const id = this.manifest.id;
         const plugins = this.app.plugins;
         await plugins.disablePlugin(id);
         await plugins.enablePlugin(id);
-        console.log(`[${this.manifest.id}] reloaded`, this);
+        console.log(`${this.logTag} reloaded`, this);
     }
 
-    async resetSettings() {
-        console.log(`[${this.manifest.id}]`, { old: this.settings, default: DEFAULT_SETTINGS });
+    async resetSettings(): Promise<void> {
+        console.log(this.logTag, { old: this.settings, default: DEFAULT_SETTINGS });
         this.settings = DEFAULT_SETTINGS;
         await this.saveData(this.settings);
     }

@@ -1,9 +1,9 @@
 # Open in VSCode
 
-This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button and two commands to open your vault as a Visual Studio Code workspace:
+This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button, a file explorer context menu and two commands to open your vault as a Visual Studio Code workspace:
 
 - `open-vscode`: Uses `child_process` to launch VSCode with the `code` command. Currently, this is the command bound to the ribbon button.
-- `open-vscode-via-url`: Open VSCode using a `vscode://` URL *(Windows users, please see [notes regarding the UX of this command](#caveats-regarding-the-url-command-for-windows-users))*
+- `open-vscode-via-url`: Open VSCode using a `vscode://` URL
 
 It's functionality is probably made redundant now using the [Shell commands](https://github.com/Taitava/obsidian-shellcommands) and [Customizable Sidebar](https://github.com/phibr0/obsidian-customizable-sidebar) (or [Buttons](https://github.com/shabegom/buttons)) plugins, but it'll be maintained for the foreseeable future.
 
@@ -45,26 +45,12 @@ On some systems, this may be faster than using the `child_process` approach.
 
 - **Path to VSCode Workspace**
 
-  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [Multi Root workspace file](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces)
+  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
 
-- **Open VSCode using a `vscode-insiders://` URL**
+- **Open VSCode using a `vscode://` URL**
 
-The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons. See [this issue](https://github.com/microsoft/vscode/issues/95670) for more infomation.
-
-### Caveats regarding the URL command for Windows users
-
-TLDR; We recommend that Windows users prefer the `open-vscode` command (and not the URL one).
-
-Due to security updates in VSCode, the user experience of using opening VSCode via URL comes with some known issues!
-
-On Windows, when opening via URL, you are prompted to allow VSCode to access the file. At present there's no option in VSCode to whitelist safe locations (ie your Obsidian vault), so you get this dialog every time ☹️.
-
-Worse, if you are opening via URL, *and* have toggled the "Open File" setting on, then VSCode will attempt to open a *second* instance of VSCode, and will warn that there's another instance of Code running but not responding.
-
-If this issue affects you, please consider watching and voting for the following VSCode issues:
-
-- [Prompt users when opening vscode://file/... URIs · Issue #95252 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95252)
-- [URL protocol: confirmation dialog · Issue #95670 · microsoft/vscode](https://github.com/microsoft/vscode/issues/95670)
+See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
+The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 ## Installation
 
@@ -86,9 +72,10 @@ and DX commands to refresh settings are activated.
 Original plugin by [NomarCub](https://github.com/NomarCub).  
 If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](https://img.shields.io/static/v1?label=Sponsor%20NomarCub&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/NomarCub), on Ko-fi here: <a href='https://ko-fi.com/nomarcub' target='_blank'><img height='35' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' /></a>, or on PayPal here: [![Paypal](https://img.shields.io/badge/paypal-nomarcub-yellow?style=social&logo=paypal)](https://paypal.me/nomarcub).
 
-[Toggle ribbon setting](https://github.com/NomarCub/obsidian-open-vscode/pull/1) by [ozntel](https://github.com/ozntel).  
-[UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [ptim](https://github.com/ptim).
-[Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moyf](https://github.com/Moyf).  
+- [Toggle ribbon setting](https://github.com/NomarCub/obsidian-open-vscode/pull/1) by [Ozan Tellioglu](https://github.com/ozntel).
+- [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [Tim Osborn](https://github.com/ptim).
+- [Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moy](https://github.com/Moyf).
+- [File explorer context menu](https://github.com/NomarCub/obsidian-open-vscode/pull/15) by [Quinn McHugh](https://github.com/quinn-p-mchugh).
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
 The icon is from [Simple Icons](https://simpleicons.org/?q=visual-studio-code) ([SVG](https://simpleicons.org/icons/visualstudiocode.svg)).

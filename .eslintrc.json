@@ -20,6 +20,10 @@
     "plugin:@stylistic/recommended-extends"
   ],
   "rules": {
+    "@typescript-eslint/explicit-function-return-type": [
+			"error",
+			{ "allowExpressions": true }
+		],
     "@stylistic/indent": [
       "warn",
       4
