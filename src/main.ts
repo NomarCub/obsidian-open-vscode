@@ -54,7 +54,7 @@ export default class OpenVSCode extends Plugin {
         });
 
         this.registerEvent(
-            this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this))
+            this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)),
         );
 
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
