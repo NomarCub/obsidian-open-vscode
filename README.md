@@ -81,4 +81,3 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 - [File explorer context menu](https://github.com/NomarCub/obsidian-open-vscode/pull/15) by [Quinn McHugh](https://github.com/quinn-p-mchugh).
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
-The icon is from [Simple Icons](https://simpleicons.org/?q=visual-studio-code) ([SVG](https://simpleicons.org/icons/visualstudiocode.svg)).
