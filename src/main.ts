@@ -11,7 +11,10 @@ type HotReloadPlugin = Plugin & {
 
 export default class OpenVSCode extends Plugin {
     static iconId = "vscode-logo";
-    // source: https://simpleicons.org/?q=visual-studio-code
+    // source: https://github.com/simple-icons/simple-icons/blob/12.4.0/icons/visualstudiocode.svg
+    // removed from Simple Icons in v13:
+    //   https://github.com/simple-icons/simple-icons/releases/tag/13.0.0
+    //   https://github.com/simple-icons/simple-icons/issues/11236
     static iconSvgContent = `
 <svg role="img" viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg">
