@@ -128,7 +128,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 .onChange(value => {
                     this.plugin.settings.useUrlInsiders = value;
                     void this.plugin.saveSettings();
-                })
+                }),
             );
     }
 }

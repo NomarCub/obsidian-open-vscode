@@ -1,11 +1,11 @@
 {
-	"id": "open-vscode",
-	"name": "Open vault in VSCode",
-	"version": "1.3.0",
-	"minAppVersion": "1.7.2",
-	"description": "Ribbon button, command and file explorer context menu to open the vault as a Visual Studio Code (VSCode) workspace",
-	"author": "NomarCub",
-	"authorUrl": "https://github.com/NomarCub",
-	"fundingUrl": "https://ko-fi.com/nomarcub",
-	"isDesktopOnly": true
+  "id": "open-vscode",
+  "name": "Open vault in VSCode",
+  "version": "1.3.0",
+  "minAppVersion": "1.7.2",
+  "description": "Ribbon button, command and file explorer context menu to open the vault as a Visual Studio Code (VSCode) workspace",
+  "author": "NomarCub",
+  "authorUrl": "https://github.com/NomarCub",
+  "fundingUrl": "https://ko-fi.com/nomarcub",
+  "isDesktopOnly": true
 }
