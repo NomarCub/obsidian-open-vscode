@@ -4,14 +4,23 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "ES6",
+    "target": "ESNext",
     "allowJs": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "isolatedModules": true,
+    "noEmit": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+    // rules to make checking stricter
     "strict": true,
     "noImplicitOverride": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "noPropertyAccessFromIndexSignature": true,
     "lib": [
       "DOM",
       "ES5",
@@ -21,6 +30,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "**/*.mjs"
   ]
 }
