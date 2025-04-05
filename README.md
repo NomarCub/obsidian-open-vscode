@@ -44,7 +44,7 @@ On some systems, this may be faster than using the `child_process` approach.
 See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
 The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
-- **Open curren file**
+- **Open current file**
 
   Open the current file rather than the root of the Obsidian vault.
 
