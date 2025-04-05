@@ -8,8 +8,8 @@ export interface OpenVSCodeSettings {
     showFileContextMenuItem: boolean;
     executeTemplate: string;
     openFile: boolean;
+    urlProtocol: string;
     workspacePath: string;
-    useUrlInsiders: boolean;
 }
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
@@ -17,9 +17,9 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonCommandUsesCode: true,
     showFileContextMenuItem: true,
     executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
+    urlProtocol: "vscode",
     openFile: true,
     workspacePath: "{{vaultpath}}",
-    useUrlInsiders: false,
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -122,12 +122,16 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
         })).appendText(".");
 
         new Setting(containerEl)
-            .setName("Open VSCode using a 'vscode-insiders://' URL")
-            .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.useUrlInsiders)
+            .setName("URL protocol")
+            .setDesc("You can override the default vscode:// to VSCode Insiders, VSCodium or other VSCode variants' protocol string")
+            .addText(text => text
+                .setPlaceholder(DEFAULT_SETTINGS.urlProtocol)
+                .setValue(this.plugin.settings.urlProtocol || DEFAULT_SETTINGS.urlProtocol)
                 .onChange(value => {
-                    this.plugin.settings.useUrlInsiders = value;
-                    void this.plugin.saveSettings();
+                    value = value.trim();
+                    if (value === "") value = DEFAULT_SETTINGS.urlProtocol;
+                    this.plugin.settings.urlProtocol = value;
+                    void this.plugin.saveData(this.plugin.settings);
                 }),
             );
     }

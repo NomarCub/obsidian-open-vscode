@@ -106,11 +106,11 @@ export default class OpenVSCode extends Plugin {
         });
     }
 
+    // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
     openVSCodeUrl(): void {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
-        const { openFile, useUrlInsiders } = this.settings;
 
         const path = this.app.vault.adapter.getBasePath();
         const file = this.app.workspace.getActiveFile();
@@ -118,11 +118,9 @@ export default class OpenVSCode extends Plugin {
         if (this.DEV)
             console.log(this.logTag, { settings: this.settings, path, filePath });
 
-        // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-        const protocol = useUrlInsiders ? "vscode-insiders" : "vscode";
-        let url = `${protocol}://file/${path}`;
+        let url = `${this.settings.urlProtocol}://file/${path}`;
 
-        if (openFile) {
+        if (this.settings.openFile) {
             url += `/${filePath}`;
             /*
             By default, opening a file via the vscode:// URL will cause that file to open
@@ -138,7 +136,7 @@ export default class OpenVSCode extends Plugin {
 
             // HACK: first open the _workspace_ to bring the correct window to the front....
             const workspacePath = this.settings.workspacePath.replaceAll("{{vaultpath}}", path);
-            window.open(`${protocol}://file/${workspacePath}`);
+            window.open(`${this.settings.urlProtocol}://file/${workspacePath}`);
 
             // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
             setTimeout(() => {
@@ -152,11 +150,21 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as OpenVSCodeSettings;
+        // migrate from before 1.4.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/22
+        const savedSettings = (await this.loadData()) as OpenVSCodeSettings & { useUrlInsiders?: boolean };
+        let migrated = false;
+        if (savedSettings.useUrlInsiders) {
+            savedSettings.urlProtocol = "vscode-insiders";
+            delete savedSettings.useUrlInsiders;
+            migrated = true;
+        }
+
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, savedSettings);
+        if (migrated) await this.saveData(this.settings);
     }
 
-    async saveSettings(): Promise<void> {
-        await this.saveData(this.settings);
+    async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
+        await this.saveData(settings);
     }
 
     refreshIconRibbon(): void {

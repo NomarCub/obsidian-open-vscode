@@ -40,9 +40,11 @@ See also: [VSCode CLI - Opening Files and Folders](https://code.visualstudio.com
 
 ### Settings for `open-vscode-via-url`
 
-On some systems, this may be faster than using the `child_process` approach.
+On some systems, this may be faster than using the `child_process` approach.  
+See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
+The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
-- **Open file**
+- **Open current file**
 
   Open the current file rather than the root of the Obsidian vault.
 
@@ -50,10 +52,9 @@ On some systems, this may be faster than using the `child_process` approach.
 
   Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
 
-- **Open VSCode using a `vscode://` URL**
+- **URL protocol**
 
-See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
-The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
+  You can override the default `vscode://` to VSCode Insiders, VSCodium or other VSCode variants' protocol string.
 
 ## Installation
 
