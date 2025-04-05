@@ -150,7 +150,7 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        // migrate from before 1.4.0
+        // migrate from before 1.4.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/22
         const savedSettings = (await this.loadData()) as OpenVSCodeSettings & { useUrlInsiders?: boolean };
         let migrated = false;
         if (savedSettings.useUrlInsiders) {
