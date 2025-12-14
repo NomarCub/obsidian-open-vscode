@@ -1,8 +1,7 @@
-import { FileSystemAdapter, Plugin, addIcon, MarkdownView, Menu, TAbstractFile } from "obsidian";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as obsidianInternal from "obsidian-typings";
-import { DEFAULT_SETTINGS, OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
 import { exec } from "child_process";
+import { addIcon, FileSystemAdapter, MarkdownView, type Menu, Plugin, type TAbstractFile } from "obsidian";
+import type {} from "obsidian-typings";
+import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
 
 type HotReloadPlugin = Plugin & {
     // https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
@@ -34,7 +33,7 @@ export default class OpenVSCode extends Plugin {
     readonly logTag = `[${this.manifest.id}]`;
 
     override async onload(): Promise<void> {
-        console.log("Loading " + this.manifest.name + " plugin");
+        console.log(`Loading ${this.manifest.name} plugin`);
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
         this.refreshIconRibbon();
@@ -53,9 +52,7 @@ export default class OpenVSCode extends Plugin {
             callback: this.openVSCodeUrl.bind(this),
         });
 
-        this.registerEvent(
-            this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)),
-        );
+        this.registerEvent(this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)));
 
         const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
         this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
@@ -99,7 +96,7 @@ export default class OpenVSCode extends Plugin {
             .replaceAll("{{ch}}", ch.toString());
 
         if (this.DEV) console.log(this.logTag, { command });
-        exec(command, error => {
+        exec(command, (error) => {
             if (error) {
                 console.error(`${this.logTag} exec error: ${error.message}`);
             }
@@ -115,8 +112,7 @@ export default class OpenVSCode extends Plugin {
         const path = this.app.vault.adapter.getBasePath();
         const file = this.app.workspace.getActiveFile();
         const filePath = file?.path ?? "";
-        if (this.DEV)
-            console.log(this.logTag, { settings: this.settings, path, filePath });
+        if (this.DEV) console.log(this.logTag, { settings: this.settings, path, filePath });
 
         let url = `${this.settings.urlProtocol}://file/${path}`;
 
@@ -151,7 +147,9 @@ export default class OpenVSCode extends Plugin {
 
     async loadSettings(): Promise<void> {
         // migrate from before 1.4.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/22
-        const savedSettings = (await this.loadData()) as (OpenVSCodeSettings & { useUrlInsiders?: boolean }) | null;
+        const savedSettings = (await this.loadData()) as
+            | (OpenVSCodeSettings & { useUrlInsiders?: boolean })
+            | null;
         let migrated = false;
         if (savedSettings?.useUrlInsiders) {
             savedSettings.urlProtocol = "vscode-insiders";
@@ -182,7 +180,7 @@ export default class OpenVSCode extends Plugin {
             return;
         }
 
-        menu.addItem(item => {
+        menu.addItem((item) => {
             item.setTitle("Open in VS Code")
                 .setIcon(OpenVSCode.iconId)
                 .onClick(() => {

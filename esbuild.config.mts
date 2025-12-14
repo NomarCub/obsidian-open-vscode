@@ -10,12 +10,16 @@ if you want to view the source, please visit the github repository of this plugi
 */
 `;
 
-const prod = (process.argv[2] === "production");
+const prod = process.argv[2] === "production";
 
 let outfile = "main.js";
 if (fs.existsSync("./.devtarget")) {
-    const outFolderOverride = fs.readFileSync("./.devtarget", "utf8").trim().split("\n")
-        .map(line => line.trim()).find(line => !line.startsWith("#") && !line.startsWith("//"));
+    const outFolderOverride = fs
+        .readFileSync("./.devtarget", "utf8")
+        .trim()
+        .split("\n")
+        .map((line) => line.trim())
+        .find((line) => !line.startsWith("#") && !line.startsWith("//"));
     if (outFolderOverride) {
         outfile = path.join(outFolderOverride, outfile);
         console.log("Temporary output location:", outfile);
@@ -40,7 +44,8 @@ const context = await esbuild.context({
         "@lezer/common",
         "@lezer/highlight",
         "@lezer/lr",
-        ...builtins],
+        ...builtins,
+    ],
     format: "cjs",
     target: "es2018",
     logLevel: "info",
@@ -53,7 +58,7 @@ const context = await esbuild.context({
 
 if (prod) {
     await context.rebuild();
-    process.exit(0);
+    await context.dispose();
 } else {
     await context.watch();
 }

@@ -1,31 +1,21 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import stylistic from "@stylistic/eslint-plugin";
 
+/* eslint-disable-next-line @typescript-eslint/no-deprecated --
+   TODO: fix, see https://typescript-eslint.io/packages/typescript-eslint/#config-deprecated */
 export default tseslint.config({
-    files: ["**/*.ts", "**/*.mjs"],
+    files: ["**/*.{ts,mts,mjs}"],
     extends: [
         eslint.configs.recommended,
         tseslint.configs.strictTypeChecked,
         tseslint.configs.stylisticTypeChecked,
-        stylistic.configs.recommended,
     ],
     languageOptions: {
-        parserOptions: { projectService: true, project: true },
+        parserOptions: { projectService: true },
     },
     rules: {
-        "@typescript-eslint/explicit-function-return-type": [
-            "error", { allowExpressions: true },
-        ],
-
-        // formatting
-        "@stylistic/indent": ["warn", 4],
-        "@stylistic/member-delimiter-style": ["warn",
-            { multiline: { delimiter: "semi", requireLast: true } },
-        ],
-        "@stylistic/semi": ["warn", "always"],
-        "@stylistic/quotes": ["warn", "double", { avoidEscape: true }],
-        "@stylistic/brace-style": ["warn", "1tbs"],
-        "@stylistic/arrow-parens": ["warn", "as-needed"],
+        "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
+        "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+        "@typescript-eslint/no-non-null-assertion": "off",
     },
 });

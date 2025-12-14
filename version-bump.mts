@@ -9,7 +9,6 @@ manifest.version = targetVersion;
 await writeFile("manifest.json", JSON.stringify(manifest, null, 2));
 
 // update versions.json with target version and minAppVersion from manifest.json
-/** @type {Record<string, string>} */
-const newVersions = Object.assign({}, versions);
+const newVersions: Record<string, string> = Object.assign({}, versions);
 newVersions[targetVersion] = manifest.minAppVersion;
 await writeFile("versions.json", JSON.stringify(newVersions, null, 2));

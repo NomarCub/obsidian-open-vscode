@@ -4,27 +4,32 @@
   "description": "Open vault in Visual Studio Code ribbon button and command for Obsidian (https://obsidian.md)",
   "main": "main.js",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "lint": "eslint",
+    "dev": "node esbuild.config.mts",
+    "build": "node esbuild.config.mts production",
+    "check": "npm run type-check && npm run lint && npm run format",
     "type-check": "tsc -noEmit",
-    "build": "tsc -noEmit && node esbuild.config.mjs production",
-    "version": "node version-bump.mjs"
+    "lint": "biome lint && eslint",
+    "lint:fix": "biome lint --fix && eslint --fix",
+    "format": "biome format",
+    "format:fix": "biome format --write",
+    "version": "node version-bump.mts"
   },
   "author": "NomarCub",
   "license": "MIT",
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^4.2.0",
-    "@types/node": "^22.9.0",
+    "@biomejs/biome": "^2.3.8",
+    "@eslint/js": "^9.39.1",
+    "@types/node": "~22.17.0",
     "builtin-modules": "^4.0.0",
-    "esbuild": "^0.25.2",
-    "eslint": "^9.23.0",
-    "obsidian": "~1.7.2",
-    "obsidian-typings": "^2.41.4",
+    "esbuild": "^0.27.1",
+    "eslint": "^9.39.1",
+    "obsidian": "1.8.7",
+    "obsidian-typings": "4.19.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.29.0"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1"
   }
 }
