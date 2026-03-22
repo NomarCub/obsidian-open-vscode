@@ -1,6 +1,6 @@
 {
+  "include": ["src/**/*.ts", "**/*.mts", "**/*.mjs"],
   "compilerOptions": {
-    "baseUrl": "src",
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
@@ -22,6 +22,5 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true
-  },
-  "include": ["src/**/*.ts", "**/*.mts", "**/*.mjs"]
+  }
 }

@@ -1,13 +1,13 @@
-# Open in VSCode
+# Open in VS Code
 
 This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button, a file explorer context menu and two commands to open your vault as a Visual Studio Code workspace:
 
-- `open-vscode`: Uses `child_process` to launch VSCode with the `code` command. Currently, this is the command bound to the ribbon button.
-- `open-vscode-via-url`: Open VSCode using a `vscode://` URL
+- `open-vscode`: Uses `child_process` to launch VS Code with the `code` command. Currently, this is the command bound to the ribbon button.
+- `open-vscode-via-url`: Open VS Code using a `vscode://` URL
 
 It's functionality is probably made redundant now using the [Shell commands](https://github.com/Taitava/obsidian-shellcommands) and [Customizable Sidebar](https://github.com/phibr0/obsidian-customizable-sidebar) (or [Buttons](https://github.com/shabegom/buttons)) plugins, but it'll be maintained for the foreseeable future.
 
-You can use VSCode for various purposes with your vault, such as for git version control, markdown formatting with [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode), linting with [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint), [mass formatting files](https://marketplace.visualstudio.com/items?itemName=jbockle.jbockle-format-files) and more.
+You can use VS Code for various purposes with your vault, such as for git version control, markdown formatting with [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode), linting with [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint), [mass formatting files](https://marketplace.visualstudio.com/items?itemName=jbockle.jbockle-format-files) and more.
 
 ![video showcase](https://user-images.githubusercontent.com/5298006/125867690-c11f4396-e31b-4232-9ea5-822bf729df9a.gif)
 
@@ -21,6 +21,19 @@ The icons work with light and dark mode.
 You can also use it as a command and assign hotkeys to it. You can disable the ribbon button in settings.
 ![command](https://user-images.githubusercontent.com/5298006/125869408-d39d870b-ab4f-42d0-b915-b6abc1e617d5.png)
 
+## Prerequisites
+
+For the default method of opening VS Code, you need to be able to launch VS Code from the command line.  
+
+- Either the `code` command needs to be on your path. Most VS Code installers handle this.
+  - [Visual Studio Code on macOS > Launch from the command line](https://code.visualstudio.com/docs/setup/mac#_launch-vs-code-from-the-command-line)
+- Or the full path to the VS Code executable is required.
+  - This is generally `/usr/local/bin/code`.
+  - If you installed VS Code via Homebrew it will be `/opt/homebrew/bin`.
+- Some package managers, like [Flatpak](https://github.com/NomarCub/obsidian-open-vscode/issues/11) limit what Obsidian can do. You'll have to make sure Obsidian can access VS Code and has the capability to spawn a child process.
+
+For the alternative `open-vscode-via-url` method, your system needs to have already registered VS Code for the `vscode://` URI scheme. This is done automatically for normal installs by VS Code.
+
 ## Settings
 
 - **Display Ribbon Icon**
@@ -28,38 +41,36 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ### Template for executing the `code` command
 
-You can template the command opening VSCode however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
-
-Note that on MacOS, a full path to the VSCode executable is required. This is generally "/usr/local/bin/code". If you installed VS Code via Homebrew it will be "/opt/homebrew/bin".
+You can template the command opening VS Code however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
 
 You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`.
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
 If you want to jump to the line (and character), you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.  
-See also: [VSCode CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
+See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
 
 ### Settings for `open-vscode-via-url`
 
 On some systems, this may be faster than using the `child_process` approach.  
 See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
-The first time you use the URL method for opening, VSCode displays a confirmation dialog (that you just can hit enter on) for security reasons.
+The first time you use the URL method for opening, VS Code displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 - **Open current file**
 
   Open the current file rather than the root of the Obsidian vault.
 
-- **Path to VSCode Workspace**
+- **Path to VS Code Workspace**
 
   Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
 
 - **URL protocol**
 
-  You can override the default `vscode://` to VSCode Insiders, VSCodium or other VSCode variants' protocol string.
+  You can override the default `vscode://` to VS Code Insiders, VSCodium or other VS Code variants' protocol string.
 
 ## Installation
 
 You can install the plugin via the Community Plugins tab within the Obsidian app.  
-[Here](https://obsidian.md/plugins?id=open-vscode)'s the plugin in Obsidian's Community Plugins website.  
+You can also find the plugin, [Obsidian's Community Plugins website](https://obsidian.md/plugins?id=open-vscode), which has 1-click install functionality.  
 You can install the plugin manually by copying a release to your `.obsidian/plugins/open-vscode` folder.
 
 ## Development
