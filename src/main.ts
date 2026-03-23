@@ -1,5 +1,13 @@
 import { exec } from "child_process";
-import { addIcon, FileSystemAdapter, MarkdownView, type Menu, Plugin, type TAbstractFile } from "obsidian";
+import {
+    addIcon,
+    FileSystemAdapter,
+    MarkdownView,
+    type Menu,
+    Notice,
+    Plugin,
+    type TAbstractFile,
+} from "obsidian";
 import type {} from "obsidian-typings";
 import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
 
@@ -33,7 +41,9 @@ export default class OpenVSCode extends Plugin {
     readonly logTag = `[${this.manifest.id}]`;
 
     override async onload(): Promise<void> {
-        console.log(`Loading ${this.manifest.name} plugin`);
+        if (this.DEV) {
+            console.log(`Loading ${this.manifest.name} plugin`);
+        }
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
         this.refreshIconRibbon();
@@ -76,29 +86,37 @@ export default class OpenVSCode extends Plugin {
         if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
             return;
         }
-        const { executeTemplate } = this.settings;
 
         const vaultPath = this.app.vault.adapter.getBasePath();
         const filePath = file?.path ?? "";
         const folderPath = file?.parent?.path ?? "";
 
         const cursor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
-        // VSCode line and column are 1-based
+        // VS Code line and column are 1-based
         const line = (cursor?.line ?? 0) + 1;
         const ch = (cursor?.ch ?? 0) + 1;
 
-        let command = executeTemplate.trim() === "" ? DEFAULT_SETTINGS.executeTemplate : executeTemplate;
-        command = command
+        const executeTemplate = this.settings.executeTemplate.trim() || DEFAULT_SETTINGS.executeTemplate;
+        const command = executeTemplate
             .replaceAll("{{vaultpath}}", vaultPath)
             .replaceAll("{{filepath}}", filePath)
             .replaceAll("{{folderpath}}", folderPath)
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
 
-        if (this.DEV) console.log(this.logTag, { command });
+        if (this.DEV) {
+            console.log(this.logTag, { executeTemplate, command });
+        }
+
         exec(command, (error) => {
             if (error) {
-                console.error(`${this.logTag} exec error: ${error.message}`);
+                new Notice(
+                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
+                );
+                console.error(
+                    `${this.logTag} exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
+                    error,
+                );
             }
         });
     }
@@ -120,13 +138,13 @@ export default class OpenVSCode extends Plugin {
             url += `/${filePath}`;
             /*
             By default, opening a file via the vscode:// URL will cause that file to open
-            in the front-most window in VSCode. We assume that it is preferred that files from
+            in the front-most window in VS Code. We assume that it is preferred that files from
             Obsidian should all open in the same workspace.
 
-            As a workaround, we issue two open requests to VSCode in quick succession: the first to
+            As a workaround, we issue two open requests to VS Code in quick succession: the first to
             bring the workspace to front, the second to open the file.
 
-            There is a ticket requesting this feature for VSCode:
+            There is a ticket requesting this feature for VS Code:
             https://github.com/microsoft/vscode/issues/150078
             */
 
@@ -146,19 +164,11 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        // migrate from before 1.4.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/22
-        const savedSettings = (await this.loadData()) as
-            | (OpenVSCodeSettings & { useUrlInsiders?: boolean })
-            | null;
-        let migrated = false;
-        if (savedSettings?.useUrlInsiders) {
-            savedSettings.urlProtocol = "vscode-insiders";
-            delete savedSettings.useUrlInsiders;
-            migrated = true;
-        }
-
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, savedSettings);
-        if (migrated) await this.saveData(this.settings);
+        this.settings = Object.assign(
+            {},
+            DEFAULT_SETTINGS,
+            (await this.loadData()) as OpenVSCodeSettings | null,
+        );
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
@@ -168,7 +178,7 @@ export default class OpenVSCode extends Plugin {
     refreshIconRibbon(): void {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
-            this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VSCode", () => {
+            this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
                 if (this.settings.ribbonCommandUsesCode) this.openVSCode();
                 else this.openVSCodeUrl();
             });

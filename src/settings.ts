@@ -48,7 +48,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Ribbon opens via 'code' command")
-            .setDesc("Toggle this OFF if you'd prefer that the Ribbon Icon opens VSCode via URL.")
+            .setDesc("Toggle this OFF if you'd prefer that the Ribbon Icon opens VS Code via URL.")
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.ribbonCommandUsesCode).onChange((value) => {
                     this.plugin.settings.ribbonCommandUsesCode = value;
@@ -70,11 +70,26 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
         containerEl.createEl("h3", { text: "Open via 'code' CLI settings" });
 
+        // TODO: use appendChild instead?
+        const executeDescription = document.createDocumentFragment();
+        executeDescription.append(
+            createEl("p", {
+                text: "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'.",
+            }),
+            createEl("p", {
+                text: "Example template: \"'/usr/local/bin/code' '{{vaultpath}}' '{{vaultpath}}/{{filepath}}'\"",
+            }),
+            createEl("span", { text: "For common issues, see the relevant part of the " }),
+            createEl("a", {
+                text: "readme",
+                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
+            }),
+            createEl("span", { text: "." }),
+        );
+
         new Setting(containerEl)
             .setName("Template for executing the 'code' command")
-            .setDesc(
-                "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'. Note that on MacOS, a full path to the VSCode executable is required (generally '/usr/local/bin/code'). Example template: \"'/usr/local/bin/code' '{{vaultpath}}' '{{vaultpath}}/{{filepath}}'\"",
-            )
+            .setDesc(executeDescription)
             .addText((text) =>
                 text
                     .setPlaceholder(DEFAULT_SETTINGS.executeTemplate)
@@ -108,7 +123,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             );
 
         const workspacePathSetting = new Setting(containerEl)
-            .setName("Path to VSCode Workspace")
+            .setName("Path to VS Code Workspace")
             .setDesc(
                 'Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a ',
             )
@@ -136,7 +151,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName("URL protocol")
             .setDesc(
-                "You can override the default vscode:// to VSCode Insiders, VSCodium or other VSCode variants' protocol string",
+                "You can override the default vscode:// to VS Code Insiders, VSCodium or other VS Code variants' protocol string",
             )
             .addText((text) =>
                 text
