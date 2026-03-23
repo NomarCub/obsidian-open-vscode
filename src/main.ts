@@ -110,7 +110,9 @@ export default class OpenVSCode extends Plugin {
 
         exec(command, (error) => {
             if (error) {
-                new Notice("Failed to launch VS Code. Check the plugin's settings and your logs for more details.");
+                new Notice(
+                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
+                );
                 console.error(
                     `${this.logTag} exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
                     error,
@@ -162,19 +164,11 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        // migrate from before 1.4.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/22
-        const savedSettings = (await this.loadData()) as
-            | (OpenVSCodeSettings & { useUrlInsiders?: boolean })
-            | null;
-        let migrated = false;
-        if (savedSettings?.useUrlInsiders) {
-            savedSettings.urlProtocol = "vscode-insiders";
-            delete savedSettings.useUrlInsiders;
-            migrated = true;
-        }
-
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, savedSettings);
-        if (migrated) await this.saveData(this.settings);
+        this.settings = Object.assign(
+            {},
+            DEFAULT_SETTINGS,
+            (await this.loadData()) as OpenVSCodeSettings | null,
+        );
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
