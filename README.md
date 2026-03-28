@@ -31,6 +31,7 @@ For the default method of opening VS Code, you need to be able to launch VS Code
   - This is generally `/usr/local/bin/code`.
   - If you installed VS Code via Homebrew it will be `/opt/homebrew/bin`.
 - Some package managers, like [Flatpak](https://github.com/NomarCub/obsidian-open-vscode/issues/11) limit what Obsidian can do. You'll have to make sure Obsidian can access VS Code and has the capability to spawn a child process.
+- [See other workarounds and discussion](https://github.com/NomarCub/obsidian-open-vscode/issues/3)
 
 For the alternative `open-vscode-via-url` method, your system needs to have already registered VS Code for the `vscode://` URI scheme. This is done automatically for normal installs by VS Code.
 
