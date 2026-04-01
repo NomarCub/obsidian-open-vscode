@@ -20,16 +20,17 @@
     "version": "node version-bump.mts"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.8",
+    "@biomejs/biome": "^2.4.10",
     "@eslint/js": "^9.39.4",
     "@types/node": "~22.18.0",
     "builtin-modules": "^4.0.0",
     "esbuild": "^0.27.4",
     "eslint": "^9.39.4",
+    "eslint-plugin-obsidianmd": "^0.1.9",
     "obsidian": "1.8.7",
     "obsidian-typings": "4.19.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1"
+    "typescript-eslint": "^8.58.0"
   }
 }
