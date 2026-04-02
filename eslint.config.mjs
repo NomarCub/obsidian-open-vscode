@@ -17,7 +17,7 @@ export default tseslint.config({
     },
     // @ts-expect-error -- Temporary fixes for v0.1.9., see https://github.com/obsidianmd/eslint-plugin/issues/90
     rules: {
-        // eslint-disable-next-line @typescript-eslint/no-misused-spread 
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread
         ...obsidianmd.configs?.["recommended"],
         "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
         "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],

@@ -34,8 +34,8 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     override display(): void {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl("h3", { text: "General settings" });
 
+        /// 1. General settings
         new Setting(containerEl)
             .setName("Display ribbon icon")
             .setDesc("Toggle this off, if you want to hide the ribbon icon.")
@@ -69,7 +69,8 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             );
 
-        containerEl.createEl("h3", { text: "Open via 'code' CLI settings" });
+        /// 2. Open via 'code' CLI command settings
+        new Setting(containerEl).setName("Open via 'code' CLI command").setHeading();
 
         // TODO: use appendChild instead?
         const executeDescription = document.createDocumentFragment();
@@ -103,8 +104,10 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        containerEl.createEl("h3", { text: "Open via 'vscode://' URL settings" });
-        containerEl.createEl("p", { text: "See: " }).appendChild(
+        /// 3. Open via 'vscode://' URL settings
+        const urlSettings = new Setting(containerEl).setName("Open via 'vscode://' URL").setHeading();
+
+        urlSettings.descEl.createEl("p", { text: "See: " }).appendChild(
             createEl("a", {
                 text: "Opening VS Code with URLs",
                 href: "https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls",
