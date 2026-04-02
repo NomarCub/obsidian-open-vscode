@@ -51,12 +51,14 @@ export default class OpenVSCode extends Plugin {
         this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 
         this.addCommand({
+            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
             id: "open-vscode",
             name: "Open as Visual Studio Code workspace",
             callback: this.openVSCode.bind(this),
         });
 
         this.addCommand({
+            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
             id: "open-vscode-via-url",
             name: "Open as Visual Studio Code workspace using a vscode:// URL",
             callback: this.openVSCodeUrl.bind(this),
@@ -69,13 +71,13 @@ export default class OpenVSCode extends Plugin {
 
         if (this.DEV) {
             this.addCommand({
-                id: "open-vscode-reload",
+                id: "reload",
                 name: "Reload the plugin in dev",
                 callback: this.reload.bind(this),
             });
 
             this.addCommand({
-                id: "open-vscode-reset-settings",
+                id: "reset-settings",
                 name: "Reset plugins settings to default in dev",
                 callback: this.resetSettings.bind(this),
             });

@@ -33,11 +33,11 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     override display(): void {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl("h3", { text: "General settings" });
 
+        /// 1. General settings
         new Setting(containerEl)
-            .setName("Display Ribbon Icon")
-            .setDesc("Toggle this OFF if you want to hide the Ribbon Icon.")
+            .setName("Display ribbon icon")
+            .setDesc("Toggle this off, if you want to hide the ribbon icon.")
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.ribbonIcon).onChange((value) => {
                     this.plugin.settings.ribbonIcon = value;
@@ -48,7 +48,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Ribbon opens via 'code' command")
-            .setDesc("Toggle this OFF if you'd prefer that the Ribbon Icon opens VS Code via URL.")
+            .setDesc("Toggle this off, if you'd prefer that the ribbon icon opens VS Code via URL.")
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.ribbonCommandUsesCode).onChange((value) => {
                     this.plugin.settings.ribbonCommandUsesCode = value;
@@ -59,7 +59,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName('Display "Open in VS Code" option for files/folders')
             .setDesc(
-                'Toggle this OFF to hide the "Open in VS Code" option when right-clicking a file/folder.',
+                'Toggle this off to hide the "Open in VS Code" option when right-clicking a file/folder.',
             )
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.showFileContextMenuItem).onChange((value) => {
@@ -68,7 +68,8 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             );
 
-        containerEl.createEl("h3", { text: "Open via 'code' CLI settings" });
+        /// 2. Open via 'code' CLI command settings
+        new Setting(containerEl).setName("Open via 'code' CLI command").setHeading();
 
         // TODO: use appendChild instead?
         const executeDescription = document.createDocumentFragment();
@@ -81,6 +82,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             }),
             createEl("span", { text: "For common issues, see the relevant part of the " }),
             createEl("a", {
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
                 text: "readme",
                 href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
             }),
@@ -102,8 +104,10 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     }),
             );
 
-        containerEl.createEl("h3", { text: "Open via 'vscode://' URL settings" });
-        containerEl.createEl("p", { text: "See: " }).appendChild(
+        /// 3. Open via 'vscode://' URL settings
+        const urlSettings = new Setting(containerEl).setName("Open via 'vscode://' URL").setHeading();
+
+        urlSettings.descEl.createEl("p", { text: "See: " }).appendChild(
             createEl("a", {
                 text: "Opening VS Code with URLs",
                 href: "https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls",
@@ -123,7 +127,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             );
 
         const workspacePathSetting = new Setting(containerEl)
-            .setName("Path to VS Code Workspace")
+            .setName("Path to VS Code workspace")
             .setDesc(
                 'Defaults to the {{vaultpath}} template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a ',
             )
@@ -142,6 +146,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
         workspacePathSetting.descEl
             .appendChild(
                 createEl("a", {
+                    // eslint-disable-next-line obsidianmd/ui/sentence-case
                     text: "multi-root workspace",
                     href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
                 }),
