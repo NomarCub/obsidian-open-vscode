@@ -1,4 +1,3 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import { type App, PluginSettingTab, Setting } from "obsidian";
 import type OpenVSCode from "./main";
 
@@ -83,6 +82,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             }),
             createEl("span", { text: "For common issues, see the relevant part of the " }),
             createEl("a", {
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
                 text: "readme",
                 href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
             }),
@@ -146,6 +146,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
         workspacePathSetting.descEl
             .appendChild(
                 createEl("a", {
+                    // eslint-disable-next-line obsidianmd/ui/sentence-case
                     text: "multi-root workspace",
                     href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
                 }),

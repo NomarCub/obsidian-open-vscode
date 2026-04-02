@@ -19,6 +19,13 @@ export default tseslint.config({
     rules: {
         // eslint-disable-next-line @typescript-eslint/no-misused-spread
         ...obsidianmd.configs?.["recommended"],
+        "obsidianmd/ui/sentence-case": [
+            "error",
+            {
+                brands: ["VS Code", "VS Code Insiders", "VSCodium"],
+                ignoreRegex: ["Open in VS Code"],
+            },
+        ],
         "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
         "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
         "@typescript-eslint/no-non-null-assertion": "off",
