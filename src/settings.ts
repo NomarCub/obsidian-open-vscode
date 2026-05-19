@@ -1,5 +1,5 @@
 import { type App, PluginSettingTab, Setting } from "obsidian";
-import type OpenVSCode from "./main";
+import type OpenVSCode from "./main.ts";
 
 export interface OpenVSCodeSettings {
     ribbonIcon: boolean;

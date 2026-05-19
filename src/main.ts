@@ -9,12 +9,7 @@ import {
     type TAbstractFile,
 } from "obsidian";
 import type {} from "obsidian-typings";
-import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings";
-
-type HotReloadPlugin = Plugin & {
-    // https://github.com/pjeby/hot-reload/blob/0.1.11/main.js#L70
-    enabledPlugins: Set<string>;
-};
+import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings.ts";
 
 export default class OpenVSCode extends Plugin {
     static iconId = "vscode-logo";
@@ -33,17 +28,12 @@ export default class OpenVSCode extends Plugin {
 </svg>
 `;
 
-    DEV = false;
-
     ribbonIcon?: HTMLElement;
     settings!: OpenVSCodeSettings;
 
     readonly logTag = `[${this.manifest.id}]`;
 
     override async onload(): Promise<void> {
-        if (this.DEV) {
-            console.log(`Loading ${this.manifest.name} plugin`);
-        }
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
         this.refreshIconRibbon();
@@ -65,23 +55,6 @@ export default class OpenVSCode extends Plugin {
         });
 
         this.registerEvent(this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)));
-
-        const hotReloadPlugin = this.app.plugins.getPlugin("hot-reload") as HotReloadPlugin | null;
-        this.DEV = hotReloadPlugin?.enabledPlugins.has(this.manifest.id) ?? false;
-
-        if (this.DEV) {
-            this.addCommand({
-                id: "reload",
-                name: "Reload the plugin in dev",
-                callback: this.reload.bind(this),
-            });
-
-            this.addCommand({
-                id: "reset-settings",
-                name: "Reset plugins settings to default in dev",
-                callback: this.resetSettings.bind(this),
-            });
-        }
     }
 
     openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()): void {
@@ -106,10 +79,6 @@ export default class OpenVSCode extends Plugin {
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
 
-        if (this.DEV) {
-            console.log(this.logTag, { executeTemplate, command });
-        }
-
         exec(command, (error) => {
             if (error) {
                 new Notice(
@@ -132,7 +101,6 @@ export default class OpenVSCode extends Plugin {
         const path = this.app.vault.adapter.getBasePath();
         const file = this.app.workspace.getActiveFile();
         const filePath = file?.path ?? "";
-        if (this.DEV) console.log(this.logTag, { settings: this.settings, path, filePath });
 
         let url = `${this.settings.urlProtocol}://file/${path}`;
 
@@ -156,11 +124,9 @@ export default class OpenVSCode extends Plugin {
 
             // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
             setTimeout(() => {
-                if (this.DEV) console.log(this.logTag, { url });
                 window.open(url);
             }, 200); // anecdotally, this seems to be the min required for the workspace to activate
         } else {
-            if (this.DEV) console.log(this.logTag, { url });
             window.open(url);
         }
     }
@@ -199,29 +165,5 @@ export default class OpenVSCode extends Plugin {
                     this.openVSCode(file);
                 });
         });
-    }
-
-    /**
-     * [pjeby](https://forum.obsidian.md/t/how-to-get-started-with-developing-a-custom-plugin/8157/7)
-     *
-     * > ...while doing development, you may need to reload your plugin
-     * > after making changes. You can do this by reloading, sure, but it’s easier
-     * > to just go to settings and then toggle the plugin off, then back on again.
-     * >
-     * > You can also automate this process from within the plugin itself, by
-     * > including a command that does something like this:
-     */
-    async reload(): Promise<void> {
-        const id = this.manifest.id;
-        const plugins = this.app.plugins;
-        await plugins.disablePlugin(id);
-        await plugins.enablePlugin(id);
-        console.log(`${this.logTag} reloaded`, this);
-    }
-
-    async resetSettings(): Promise<void> {
-        console.log(this.logTag, { old: this.settings, default: DEFAULT_SETTINGS });
-        this.settings = DEFAULT_SETTINGS;
-        await this.saveData(this.settings);
     }
 }
