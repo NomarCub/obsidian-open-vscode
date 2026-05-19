@@ -15,12 +15,8 @@
   },
   "linter": {
     "rules": {
-      "complexity": {
-        "useLiteralKeys": "off"
-      },
-      "correctness": {
-        "useParseIntRadix": "off"
-      },
+      "complexity": { "useLiteralKeys": "off" },
+      "correctness": { "useParseIntRadix": "off" },
       "style": {
         "useNodejsImportProtocol": "off",
         "noNonNullAssertion": "off"

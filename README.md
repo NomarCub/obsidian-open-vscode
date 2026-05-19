@@ -1,4 +1,4 @@
-# Open in VS Code
+# Open vault in VS Code
 
 This plugin for [Obsidian](https://obsidian.md/) makes a ribbon button, a file explorer context menu and two commands to open your vault as a Visual Studio Code workspace:
 
@@ -70,9 +70,16 @@ The first time you use the URL method for opening, VS Code displays a confirmati
 
 ## Installation
 
-You can install the plugin via the Community Plugins tab within the Obsidian app.  
-You can also find the plugin, [Obsidian's Community Plugins website](https://obsidian.md/plugins?id=open-vscode), which has 1-click install functionality.  
-You can install the plugin manually by copying a release to your `.obsidian/plugins/open-vscode` folder.
+Install through the official Obsidian Community site: [Obsidian Plugins - Open vault in VS Code](https://community.obsidian.md/plugins/open-vscode).
+
+You can also install the plugin via the Community Plugins tab within the Obsidian app.
+
+You can also install the plugin manually by copying a release to your `.obsidian/plugins/open-vscode` folder.
+
+## This plugin on other sites
+
+[Obsidian Stats page](https://www.moritzjung.dev/obsidian-stats/plugins/open-vscode/)  
+[Obsidian Hub page](https://publish.obsidian.md/hub/02+-+Community+Expansions/02.05+All+Community+Expansions/Plugins/open-vscode)
 
 ## Development
 
