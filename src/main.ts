@@ -9,6 +9,7 @@ import {
     type TAbstractFile,
 } from "obsidian";
 import type {} from "obsidian-typings";
+import { registerNotebookNavigatorMenus } from "./notebook-navigator.ts";
 import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings.ts";
 
 export default class OpenVSCode extends Plugin {
@@ -55,6 +56,10 @@ export default class OpenVSCode extends Plugin {
         });
 
         this.registerEvent(this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)));
+
+        // Notebook Navigator builds its own menus and does not fire "file-menu",
+        // so register the same entry through its public API when it is present.
+        registerNotebookNavigatorMenus(this, OpenVSCode.iconId);
     }
 
     openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()): void {
