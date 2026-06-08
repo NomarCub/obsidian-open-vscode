@@ -14,6 +14,8 @@ You can use VS Code for various purposes with your vault, such as for git versio
 Context menu in file navigation.  
 ![context menu](https://github.com/user-attachments/assets/a3ba9046-2263-41cf-bdc5-706b95484aba)
 
+The context menu entry also appears in [Notebook Navigator](https://github.com/johansan/notebook-navigator), on both files and folders, when that plugin is installed (see [implementation details](src/notebook-navigator.ts)).
+
 The icons work with light and dark mode.
 
 ![light and dark](https://user-images.githubusercontent.com/5298006/125868293-96c6f541-0604-4238-9fc3-05ff6c2e08df.gif)
@@ -99,5 +101,6 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 - [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [Tim Osborn](https://github.com/ptim).
 - [Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moy](https://github.com/Moyf).
 - [File explorer context menu](https://github.com/NomarCub/obsidian-open-vscode/pull/15) by [Quinn McHugh](https://github.com/quinn-p-mchugh).
+- [Notebook Navigator integration](https://github.com/NomarCub/obsidian-open-vscode/pull/32) by [sbstnslg](https://github.com/sbstnslg).
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
