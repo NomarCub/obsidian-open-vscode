@@ -101,5 +101,6 @@ If you like this plugin you can sponsor me here on GitHub: [![Sponsor NomarCub](
 - [UseURL: open file in workspace](https://github.com/NomarCub/obsidian-open-vscode/pull/5) [feature](https://github.com/NomarCub/obsidian-open-vscode/pull/7) and restructure by [Tim Osborn](https://github.com/ptim).
 - [Go to line support](https://github.com/NomarCub/obsidian-open-vscode/pull/13) by [Moy](https://github.com/Moyf).
 - [File explorer context menu](https://github.com/NomarCub/obsidian-open-vscode/pull/15) by [Quinn McHugh](https://github.com/quinn-p-mchugh).
+- [Notebook Navigator integration](https://github.com/NomarCub/obsidian-open-vscode/pull/32) by [sbstnslg](https://github.com/sbstnslg).
 
 Thank you to the makers of the [DEVONlink](https://github.com/ryanjamurphy/DEVONlink-obsidian) plugin, as it was a great starting point for working with ribbon icons in Obsidian.
