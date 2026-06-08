@@ -14,7 +14,7 @@ You can use VS Code for various purposes with your vault, such as for git versio
 Context menu in file navigation.  
 ![context menu](https://github.com/user-attachments/assets/a3ba9046-2263-41cf-bdc5-706b95484aba)
 
-The context menu entry also appears in [Notebook Navigator](https://github.com/johansan/notebook-navigator) — on both files and folders — when that plugin is installed. Notebook Navigator builds its own menus and does not fire Obsidian's native `file-menu` event, so the entry is registered through its [menu API](https://github.com/johansan/notebook-navigator/blob/main/docs/api-reference.md) instead. It honours the same context menu setting and does nothing when Notebook Navigator is not present.
+The context menu entry also appears in [Notebook Navigator](https://github.com/johansan/notebook-navigator), on both files and folders, when that plugin is installed ([implementation](src/notebook-navigator.ts)).
 
 The icons work with light and dark mode.
 
