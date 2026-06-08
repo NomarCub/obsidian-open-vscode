@@ -4,7 +4,7 @@ import type OpenVSCode from "./main.ts";
 /*
  * Types below are the subset we use, mirrored from here:
  * https://github.com/johansan/notebook-navigator/blob/3.1.2/src/api/public/notebook-navigator.d.ts#L390-L399
- * 
+ *
  * See also: https://github.com/johansan/notebook-navigator/blob/3.1.2/docs/api-reference.md
  */
 
@@ -31,7 +31,7 @@ interface NotebookNavigatorAPI {
 
 /**
  * Mirrors the native "Open in VS Code" entry into Notebook Navigator's file and folder menus.
- * 
+ *
  * Notebook Navigator builds its own menus and does not fire Obsidian's "file-menu" event,
  * so register the same entry through its public API when present.
  */
