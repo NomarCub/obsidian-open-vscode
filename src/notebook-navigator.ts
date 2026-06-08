@@ -2,11 +2,10 @@ import type { MenuItem, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import type OpenVSCode from "./main.ts";
 
 /*
- * Notebook Navigator builds its own menus and does not fire Obsidian's "file-menu"
- * event, so register the same entry through its public API when present.
- *
- * Types below are the subset we use, mirrored from notebook-navigator.d.ts @ 3.1.2:
+ * Types below are the subset we use, mirrored from here:
  * https://github.com/johansan/notebook-navigator/blob/3.1.2/src/api/public/notebook-navigator.d.ts#L390-L399
+ * 
+ * See also: https://github.com/johansan/notebook-navigator/blob/3.1.2/docs/api-reference.md
  */
 
 const NOTEBOOK_NAVIGATOR_ID = "notebook-navigator";
@@ -30,7 +29,12 @@ interface NotebookNavigatorAPI {
     };
 }
 
-/** Mirrors the native "Open in VS Code" entry into Notebook Navigator's file and folder menus. */
+/**
+ * Mirrors the native "Open in VS Code" entry into Notebook Navigator's file and folder menus.
+ * 
+ * Notebook Navigator builds its own menus and does not fire Obsidian's "file-menu" event,
+ * so register the same entry through its public API when present.
+ */
 export function registerNotebookNavigatorMenus(plugin: OpenVSCode, iconId: string): void {
     plugin.app.workspace.onLayoutReady(() => {
         const nnPlugin = plugin.app.plugins.plugins[NOTEBOOK_NAVIGATOR_ID] as
