@@ -30,7 +30,7 @@ export default class OpenVSCode extends Plugin {
 `;
 
     ribbonIcon?: HTMLElement;
-    settings!: OpenVSCodeSettings;
+    override settings!: OpenVSCodeSettings;
 
     readonly logTag = `[${this.manifest.id}]`;
 
