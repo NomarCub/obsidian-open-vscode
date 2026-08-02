@@ -136,11 +136,7 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign(
-            {},
-            DEFAULT_SETTINGS,
-            (await this.loadData()) as OpenVSCodeSettings | null,
-        );
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {

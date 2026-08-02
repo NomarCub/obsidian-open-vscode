@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=22.18"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "node esbuild.config.mts",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",
     "@eslint/js": "^9.39.5",
-    "@types/node": "~22.18.0",
+    "@types/node": "^24.13.3",
     "esbuild": "^0.28.1",
     "eslint": "^9.39.5",
     "eslint-plugin-obsidianmd": "^0.1.9",
