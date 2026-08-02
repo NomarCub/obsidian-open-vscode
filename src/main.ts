@@ -30,7 +30,7 @@ export default class OpenVSCode extends Plugin {
 `;
 
     ribbonIcon?: HTMLElement;
-    settings!: OpenVSCodeSettings;
+    override settings!: OpenVSCodeSettings;
 
     readonly logTag = `[${this.manifest.id}]`;
 
@@ -136,11 +136,7 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign(
-            {},
-            DEFAULT_SETTINGS,
-            (await this.loadData()) as OpenVSCodeSettings | null,
-        );
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
@@ -151,8 +147,11 @@ export default class OpenVSCode extends Plugin {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
-                if (this.settings.ribbonCommandUsesCode) this.openVSCode();
-                else this.openVSCodeUrl();
+                if (this.settings.ribbonCommandUsesCode) {
+                    this.openVSCode();
+                } else {
+                    this.openVSCodeUrl();
+                }
             });
         }
     }
