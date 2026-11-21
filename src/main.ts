@@ -41,19 +41,23 @@ export default class OpenVSCode extends Plugin {
 
         this.addSettingTab(new OpenVSCodeSettingsTab(this.app, this));
 
-        this.addCommand({
-            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
-            id: "open-vscode",
-            name: "Open as Visual Studio Code workspace",
-            callback: this.openVSCode.bind(this),
-        });
+        if (this.settings.showCodeCommand) {
+            this.addCommand({
+                // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
+                id: "open-vscode",
+                name: "Open as Visual Studio Code workspace",
+                callback: this.openVSCode.bind(this),
+            });
+        }
 
-        this.addCommand({
-            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
-            id: "open-vscode-via-url",
-            name: "Open as Visual Studio Code workspace using a vscode:// URL",
-            callback: this.openVSCodeUrl.bind(this),
-        });
+        if (this.settings.showUrlCommand) {
+            this.addCommand({
+                // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
+                id: "open-vscode-via-url",
+                name: "Open as Visual Studio Code workspace using a vscode:// URL",
+                callback: this.openVSCodeUrl.bind(this),
+            });
+        }
 
         this.registerEvent(this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)));
 

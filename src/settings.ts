@@ -6,6 +6,8 @@ export interface OpenVSCodeSettings {
     // use code command if true, otherwise open URL
     ribbonCommandUsesCode: boolean;
     showFileContextMenuItem: boolean;
+    showCodeCommand: boolean;
+    showUrlCommand: boolean;
     executeTemplate: string;
     openFile: boolean;
     urlProtocol: string;
@@ -16,6 +18,8 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
     ribbonCommandUsesCode: true,
     showFileContextMenuItem: true,
+    showCodeCommand: true,
+    showUrlCommand: true,
     executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
     urlProtocol: "vscode",
     openFile: true,
@@ -98,6 +102,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 heading: "Open via 'code' CLI command",
                 items: [
                     {
+                        name: "Enable this option in Command palette.",
+                        desc: "Toggle this off, if you want to hide this option in Command palette.",
+                        control: {
+                            type: "toggle",
+                            key: "showCodeCommand",
+                            defaultValue: DEFAULT_SETTINGS.showCodeCommand,
+                        },
+                    },
+                    {
                         name: "Template for executing the 'code' command",
                         desc: executeDescription,
                         control: {
@@ -128,6 +141,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                             );
 
                             setting.controlEl.append(description);
+                        },
+                    },
+                    {
+                        name: "Enable this option in Command palette.",
+                        desc: "Toggle this off, if you want to hide this option in Command palette.",
+                        control: {
+                            type: "toggle",
+                            key: "showUrlCommand",
+                            defaultValue: DEFAULT_SETTINGS.showUrlCommand,
                         },
                     },
                     // settings
