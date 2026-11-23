@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 import {
     addIcon,
+    ConfirmationModal,
     FileSystemAdapter,
     MarkdownView,
     type Menu,
@@ -83,17 +84,65 @@ export default class OpenVSCode extends Plugin {
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
 
-        exec(command, (error) => {
-            if (error) {
-                new Notice(
-                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
-                );
-                console.error(
-                    `${this.logTag} exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
-                    error,
-                );
-            }
-        });
+        const runCommand = (): void => {
+            exec(command, (error) => {
+                if (error) {
+                    new Notice(
+                        "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
+                    );
+                    console.error(
+                        `${this.logTag} exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
+                        error,
+                    );
+                }
+            });
+        };
+
+        const approvalKey = `${this.manifest.id}:approved-execute-template`;
+        const loadApprovedTemplates = (): string[] => {
+            const stored: unknown = this.app.loadLocalStorage(approvalKey);
+            return Array.isArray(stored) ? stored.filter((value) => typeof value === "string") : [];
+        };
+        if (loadApprovedTemplates().includes(executeTemplate)) {
+            runCommand();
+            return;
+        }
+
+        {
+            const modal = new ConfirmationModal(this.app);
+
+            modal.contentEl.createEl("p", {
+                text: `The ${this.manifest.name} plugin will run the following command. Allow this command template for this vault on this computer.`,
+            });
+            const commandEl = modal.contentEl.createEl("pre");
+            commandEl.style.whiteSpace = "pre-wrap";
+            commandEl.style.overflowWrap = "anywhere";
+            commandEl.createEl("code", { text: command });
+            modal.contentEl.createEl("p", { text: "Command template:" });
+            const templateEl = modal.contentEl.createEl("pre");
+            templateEl.style.whiteSpace = "pre-wrap";
+            templateEl.style.overflowWrap = "anywhere";
+            templateEl.createEl("code", { text: executeTemplate });
+
+            modal
+                .setTitle("Allow shell command?")
+                .addCancelButton()
+                .addButton((button) =>
+                    button
+                        .setButtonText("Allow and run")
+                        .setDestructive()
+                        .setCta()
+                        .onClick(() => {
+                            const approved = loadApprovedTemplates();
+                            if (!approved.includes(executeTemplate)) {
+                                approved.push(executeTemplate);
+                            }
+                            this.app.saveLocalStorage(approvalKey, approved);
+                            runCommand();
+                        }),
+                )
+                .open();
+        }
     }
 
     // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
