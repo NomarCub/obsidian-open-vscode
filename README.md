@@ -25,7 +25,7 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ## Prerequisites
 
-For the default method of opening VS Code, you need to be able to launch VS Code from the command line.  
+For the default method of opening VS Code, you need to be able to launch VS Code from the command line.
 
 - Either the `code` command needs to be on your path. Most VS Code installers handle this.
   - Special steps needed for macOS: [Visual Studio Code on macOS > Launch from the command line](https://code.visualstudio.com/docs/setup/mac#_launch-vs-code-from-the-command-line)
