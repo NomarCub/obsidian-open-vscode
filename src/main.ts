@@ -115,6 +115,8 @@ export default class OpenVSCode extends Plugin {
                 text: `The ${this.manifest.name} plugin will run the following command. Allow this command template for this vault on this computer.`,
             });
             const commandEl = modal.contentEl.createEl("pre");
+            /* eslint-disable obsidianmd/no-static-styles-assignment  --
+                TODO: Avoid setting styles directly via `element.style.*`. Use CSS classes for better theming and maintainability. Use the `setCssProps` function to change CSS properties*/
             commandEl.style.whiteSpace = "pre-wrap";
             commandEl.style.overflowWrap = "anywhere";
             commandEl.createEl("code", { text: command });
@@ -122,6 +124,7 @@ export default class OpenVSCode extends Plugin {
             const templateEl = modal.contentEl.createEl("pre");
             templateEl.style.whiteSpace = "pre-wrap";
             templateEl.style.overflowWrap = "anywhere";
+            /* eslint-enable obsidianmd/no-static-styles-assignment */
             templateEl.createEl("code", { text: executeTemplate });
 
             modal
