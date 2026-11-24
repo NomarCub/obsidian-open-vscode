@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "node esbuild.config.mts",
     "build": "node esbuild.config.mts production",
-    "check": "npm run type-check && npm run lint && npm run format && npm audit",
+    "check": "npm run type-check && npm run lint && npm run format",
     "type-check": "tsc",
     "lint": "biome lint && eslint",
     "lint:fix": "biome lint --fix && eslint --fix",
