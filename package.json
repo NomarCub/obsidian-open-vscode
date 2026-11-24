@@ -26,7 +26,7 @@
     "@types/node": "^24.13.3",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
-    "eslint-plugin-obsidianmd": "^0.1.9",
+    "eslint-plugin-obsidianmd": "^0.6.0",
     "obsidian": "^1.13.1",
     "obsidian-typings": "6.29.0",
     "tslib": "^2.9.1",
