@@ -86,7 +86,14 @@ You can also install the plugin manually by copying a release to your `.obsidian
 ## Development
 
 This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there.  
-Contributions are welcome.
+
+### Contributing
+
+Contributions are welcome, with or without a software development background!
+
+Consider first opening an issue describing your problem or proposal *before* opening a pull request with code changes.
+
+LLM usage for contributions is allowed, but disclosure is mandatory. Using LLMs directly is forbidden for text that people will read, including issue or PR descriptions or text in the plugin. (Inspired by the [Rust LLM usage policy](https://forge.rust-lang.org/policies/llm-usage.html#summary)).
 
 ## Credits
 
