@@ -88,10 +88,6 @@ You can also install the plugin manually by copying a release to your `.obsidian
 This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there.  
 Contributions are welcome.
 
-If [pjeby/hot-reload](https://github.com/pjeby/hot-reload) is installed,
-activated, and open-vscode is registered with hot-reload, then extra logging
-and DX commands to refresh settings are activated.
-
 ## Credits
 
 Original plugin by [NomarCub](https://github.com/NomarCub).  
