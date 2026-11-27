@@ -11,10 +11,14 @@ import {
 import type {} from "obsidian-typings";
 import { DEFAULT_SETTINGS, type OpenVSCodeSettings } from "./settings.ts";
 
+interface VSCodeContext {
+    app: App;
+    settings: OpenVSCodeSettings;
+    manifest: Pick<PluginManifest, "id" | "name">;
+}
+
 export function openVSCode(
-    app: App,
-    settings: OpenVSCodeSettings,
-    manifest: PluginManifest,
+    { app, settings, manifest }: VSCodeContext,
     file: TAbstractFile | null = app.workspace.getActiveFile(),
 ): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
@@ -103,7 +107,7 @@ export function openVSCode(
 }
 
 // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-export function openVSCodeUrl(app: App, settings: OpenVSCodeSettings): void {
+export function openVSCodeUrl({ app, settings }: VSCodeContext): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
         return;
     }

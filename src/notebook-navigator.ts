@@ -48,7 +48,7 @@ export function registerNotebookNavigatorMenus(plugin: OpenVSCode, iconId: strin
             item.setTitle("Open in VS Code")
                 .setIcon(iconId)
                 .onClick(() => {
-                    openVSCode(plugin.app, plugin.settings, plugin.manifest, file);
+                    openVSCode(plugin, file);
                 });
         };
 

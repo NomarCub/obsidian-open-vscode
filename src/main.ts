@@ -36,7 +36,7 @@ export default class OpenVSCode extends Plugin {
             id: "open-vscode",
             name: "Open as Visual Studio Code workspace",
             callback: () => {
-                openVSCode(this.app, this.settings, this.manifest);
+                openVSCode(this);
             },
         });
 
@@ -45,7 +45,7 @@ export default class OpenVSCode extends Plugin {
             id: "open-vscode-via-url",
             name: "Open as Visual Studio Code workspace using a vscode:// URL",
             callback: () => {
-                openVSCodeUrl(this.app, this.settings);
+                openVSCodeUrl(this);
             },
         });
 
@@ -68,9 +68,9 @@ export default class OpenVSCode extends Plugin {
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
                 if (this.settings.ribbonCommandUsesCode) {
-                    openVSCode(this.app, this.settings, this.manifest);
+                    openVSCode(this);
                 } else {
-                    openVSCodeUrl(this.app, this.settings);
+                    openVSCodeUrl(this);
                 }
             });
         }
@@ -85,7 +85,7 @@ export default class OpenVSCode extends Plugin {
             item.setTitle("Open in VS Code")
                 .setIcon(OpenVSCode.iconId)
                 .onClick(() => {
-                    openVSCode(this.app, this.settings, this.manifest, file);
+                    openVSCode(this, file);
                 });
         });
     }
