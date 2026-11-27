@@ -21,6 +21,17 @@ export function openVSCode(
     { app, settings, manifest }: VSCodeContext,
     file: TAbstractFile | null = app.workspace.getActiveFile(),
 ): void {
+    if (settings.openMethod === "exec") {
+        openVSCodeExec({ app, settings, manifest }, file);
+    } else {
+        openVSCodeUrl({ app, settings, manifest });
+    }
+}
+
+function openVSCodeExec(
+    { app, settings, manifest }: VSCodeContext,
+    file: TAbstractFile | null = app.workspace.getActiveFile(),
+): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
         return;
     }
@@ -107,7 +118,7 @@ export function openVSCode(
 }
 
 // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-export function openVSCodeUrl({ app, settings }: VSCodeContext): void {
+function openVSCodeUrl({ app, settings }: VSCodeContext): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
         return;
     }

@@ -3,8 +3,7 @@ import type OpenVSCode from "./main.ts";
 
 export interface OpenVSCodeSettings {
     ribbonIcon: boolean;
-    // use code command if true, otherwise open URL
-    ribbonCommandUsesCode: boolean;
+    openMethod: "exec" | "url";
     showFileContextMenuItem: boolean;
     executeTemplate: string;
     openFile: boolean;
@@ -14,7 +13,7 @@ export interface OpenVSCodeSettings {
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
-    ribbonCommandUsesCode: true,
+    openMethod: "exec",
     showFileContextMenuItem: true,
     executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
     urlProtocol: "vscode",
@@ -75,12 +74,16 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 },
             },
             {
-                name: "Ribbon opens via 'code' command",
-                desc: "Toggle this off, if you'd prefer that the ribbon icon opens VS Code via URL.",
+                name: "Open method",
+                desc: "Choose how to open VS Code.",
                 control: {
-                    type: "toggle",
-                    key: "ribbonCommandUsesCode",
-                    defaultValue: DEFAULT_SETTINGS.ribbonCommandUsesCode,
+                    type: "dropdown",
+                    key: "openMethod",
+                    defaultValue: DEFAULT_SETTINGS.openMethod,
+                    options: {
+                        exec: "Shell command",
+                        url: "URL",
+                    },
                 },
             },
             {

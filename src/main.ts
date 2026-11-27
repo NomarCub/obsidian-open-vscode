@@ -2,7 +2,7 @@ import { addIcon, type Menu, Plugin, type TAbstractFile } from "obsidian";
 import type {} from "obsidian-typings";
 import { registerNotebookNavigatorMenus } from "./notebook-navigator.ts";
 import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings.ts";
-import { openVSCode, openVSCodeUrl } from "./vsCodeUtils.ts";
+import { openVSCode } from "./vsCodeUtils.ts";
 
 export default class OpenVSCode extends Plugin {
     static iconId = "vscode-logo";
@@ -34,18 +34,9 @@ export default class OpenVSCode extends Plugin {
         this.addCommand({
             // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
             id: "open-vscode",
-            name: "Open as Visual Studio Code workspace",
+            name: "Open vault with Visual Studio Code",
             callback: () => {
                 openVSCode(this);
-            },
-        });
-
-        this.addCommand({
-            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
-            id: "open-vscode-via-url",
-            name: "Open as Visual Studio Code workspace using a vscode:// URL",
-            callback: () => {
-                openVSCodeUrl(this);
             },
         });
 
@@ -56,7 +47,16 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        // migrate from before 2.0.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/TODO
+        const savedSettings = (await this.loadData()) as
+            | (Partial<OpenVSCodeSettings> & { ribbonCommandUsesCode?: boolean })
+            | null;
+        const { ribbonCommandUsesCode, ...settings } = savedSettings ?? {};
+        this.settings = {
+            ...DEFAULT_SETTINGS,
+            ...settings,
+            openMethod: settings.openMethod ?? (ribbonCommandUsesCode === false ? "url" : "exec"),
+        };
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
@@ -67,11 +67,7 @@ export default class OpenVSCode extends Plugin {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
-                if (this.settings.ribbonCommandUsesCode) {
-                    openVSCode(this);
-                } else {
-                    openVSCodeUrl(this);
-                }
+                openVSCode(this);
             });
         }
     }
