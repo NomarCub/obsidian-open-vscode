@@ -1,5 +1,6 @@
 import type { MenuItem, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 import type OpenVSCode from "./main.ts";
+import { openVSCode } from "./vsCodeUtils.ts";
 
 /*
  * Types below are the subset we use, mirrored from here:
@@ -47,7 +48,7 @@ export function registerNotebookNavigatorMenus(plugin: OpenVSCode, iconId: strin
             item.setTitle("Open in VS Code")
                 .setIcon(iconId)
                 .onClick(() => {
-                    plugin.openVSCode(file);
+                    openVSCode(plugin.app, plugin.settings, plugin.manifest, file);
                 });
         };
 
