@@ -105,10 +105,10 @@ function openVSCodeExec({ app, manifest }: ObsidianContext, executeTemplate: str
         const stored: unknown = app.loadLocalStorage(approvalKey);
         return Array.isArray(stored) ? stored.filter((value) => typeof value === "string") : [];
     };
-    // if (loadApprovedTemplates().includes(executeTemplate)) {
-    //     runCommand();
-    //     return;
-    // }
+    if (loadApprovedTemplates().includes(executeTemplate)) {
+        runCommand();
+        return;
+    }
 
     {
         const modal = new ConfirmationModal(app);
