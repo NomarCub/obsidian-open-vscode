@@ -44,13 +44,13 @@ For the alternative `open-vscode-via-url` method, your system needs to have alre
 
 ### Template for executing the `code` command
 
-You can template the command opening VS Code however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
+You can template the command opening VS Code however you like with its [provided command line arguments](https://code.visualstudio.com/docs/configure/command-line#_core-cli-options). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
 
 You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`.
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
 If you want to jump to the line (and character), you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.  
-See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
+See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.com/docs/configure/command-line#_opening-files-and-folders).
 
 ### Settings for `open-vscode-via-url`
 
@@ -64,7 +64,7 @@ The first time you use the URL method for opening, VS Code displays a confirmati
 
 - **Path to VS Code Workspace**
 
-  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
+  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces#_multi-root-workspaces).
 
 - **URL protocol**
 

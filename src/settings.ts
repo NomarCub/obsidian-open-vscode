@@ -93,7 +93,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     });
                     paragraph.createEl("a", {
                         text: "(link)",
-                        href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
+                        href: "https://code.visualstudio.com/docs/editing/workspaces/workspaces#_multi-root-workspaces",
                     });
                     paragraph.append(".");
                 }),
@@ -107,9 +107,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         // name is necessary to keep the description-only row visible without a render callback
                         name: "Shell command help",
                         desc: createFragment((fragment) => {
+                            fragment.append("See VS Code's core CLI options: ");
+                            fragment.createEl("a", {
+                                text: "link",
+                                href: "https://code.visualstudio.com/docs/configure/command-line#_core-cli-options",
+                            });
+                            fragment.append(".");
                             fragment.append("For common issues, see the relevant part of the readme ");
                             fragment.createEl("a", {
-                                text: "(link)",
+                                text: "(plugin help link)",
                                 href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
                             });
                             fragment.append(".");
@@ -161,7 +167,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         desc: createFragment((fragment) => {
                             fragment.append("See: ");
                             fragment.createEl("a", {
-                                text: "Opening VS Code with URLs",
+                                text: "Opening VS Code with URLs (docs link)",
                                 href: "https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls",
                             });
                         }),
