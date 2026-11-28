@@ -7,9 +7,10 @@ import {
     Notice,
     type PluginManifest,
     type TAbstractFile,
+    TFolder,
 } from "obsidian";
 import type {} from "obsidian-typings";
-import { DEFAULT_SETTINGS, type OpenVSCodeSettings } from "./settings.ts";
+import { DEFAULT_SETTINGS, type OpenTarget, type OpenVSCodeSettings } from "./settings.ts";
 
 interface VSCodeContext {
     app: App;
@@ -21,38 +22,59 @@ export function openVSCode(
     { app, settings, manifest }: VSCodeContext,
     file: TAbstractFile | null = app.workspace.getActiveFile(),
 ): void {
-    if (settings.openMethod === "exec") {
-        openVSCodeExec({ app, settings, manifest }, file);
-    } else {
-        openVSCodeUrl({ app, settings, manifest });
-    }
-}
-
-function openVSCodeExec(
-    { app, settings, manifest }: VSCodeContext,
-    file: TAbstractFile | null = app.workspace.getActiveFile(),
-): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
         return;
     }
 
     const vaultPath = app.vault.adapter.getBasePath();
     const filePath = file?.path ?? "";
-    const folderPath = file?.parent?.path ?? "";
+    const folderPath = file instanceof TFolder ? file.path : (file?.parent?.path ?? "");
+    const target: OpenTarget =
+        !file || (file instanceof TFolder && file.isRoot())
+            ? "Vault"
+            : file instanceof TFolder
+              ? "Folder"
+              : "File";
 
-    const cursor = app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
+    // only reuse the active note's cursor when opening that same note
+    const cursor =
+        file && file === app.workspace.getActiveFile()
+            ? app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor()
+            : undefined;
     // VS Code line and column are 1-based
     const line = (cursor?.line ?? 0) + 1;
     const ch = (cursor?.ch ?? 0) + 1;
 
-    const executeTemplate = settings.executeTemplate.trim() || DEFAULT_SETTINGS.executeTemplate;
-    const command = executeTemplate
-        .replaceAll("{{vaultpath}}", vaultPath)
-        .replaceAll("{{filepath}}", filePath)
-        .replaceAll("{{folderpath}}", folderPath)
-        .replaceAll("{{line}}", line.toString())
-        .replaceAll("{{ch}}", ch.toString());
+    // formatting for the URL method
+    const formatPath = (path: string): string =>
+        settings.openMethod === "url"
+            ? // encodeURI preserves / and :, but also # and ?, so escape those separately.
+              encodeURI(path.replaceAll("\\", "/")).replaceAll("#", "%23").replaceAll("?", "%3F")
+            : path;
 
+    const renderTemplate = (template: string): string =>
+        template
+            .replaceAll("{{vaultpath}}", formatPath(vaultPath))
+            .replaceAll("{{filepath}}", formatPath(filePath))
+            .replaceAll("{{folderpath}}", formatPath(folderPath))
+            .replaceAll("{{line}}", line.toString())
+            .replaceAll("{{ch}}", ch.toString());
+    // combine method and target to address the flat settings, `as const` preserves valid key types
+    const templateKey = `${settings.openMethod}${target}Template` as const;
+    const template = settings[templateKey].trim() || DEFAULT_SETTINGS[templateKey];
+
+    if (settings.openMethod === "exec") {
+        openVSCodeExec({ app, settings, manifest }, template, renderTemplate(template));
+    } else {
+        const vaultTemplate = settings.urlVaultTemplate.trim() || DEFAULT_SETTINGS.urlVaultTemplate;
+        openVSCodeUrl(
+            renderTemplate(template),
+            settings.openFile && target !== "Vault" ? renderTemplate(vaultTemplate) : undefined,
+        );
+    }
+}
+
+function openVSCodeExec({ app, manifest }: VSCodeContext, executeTemplate: string, command: string): void {
     const runCommand = (): void => {
         exec(command, (error) => {
             if (error) {
@@ -118,19 +140,8 @@ function openVSCodeExec(
 }
 
 // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-function openVSCodeUrl({ app, settings }: VSCodeContext): void {
-    if (!(app.vault.adapter instanceof FileSystemAdapter)) {
-        return;
-    }
-
-    const path = app.vault.adapter.getBasePath();
-    const file = app.workspace.getActiveFile();
-    const filePath = file?.path ?? "";
-
-    let url = `${settings.urlProtocol}://file/${path}`;
-
-    if (settings.openFile) {
-        url += `/${filePath}`;
+function openVSCodeUrl(url: string, workspaceUrl?: string): void {
+    if (workspaceUrl) {
         /*
             By default, opening a file via the vscode:// URL will cause that file to open
             in the front-most window in VS Code. We assume that it is preferred that files from
@@ -144,8 +155,7 @@ function openVSCodeUrl({ app, settings }: VSCodeContext): void {
             */
 
         // HACK: first open the _workspace_ to bring the correct window to the front....
-        const workspacePath = settings.workspacePath.replaceAll("{{vaultpath}}", path);
-        window.open(`${settings.urlProtocol}://file/${workspacePath}`);
+        window.open(workspaceUrl);
 
         // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
         setTimeout(() => {

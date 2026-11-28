@@ -1,24 +1,33 @@
 import { type App, PluginSettingTab, type SettingDefinitionItem } from "obsidian";
 import type OpenVSCode from "./main.ts";
 
+export type OpenMethod = "exec" | "url";
+export type OpenTarget = "Vault" | "Folder" | "File";
+
 export interface OpenVSCodeSettings {
     ribbonIcon: boolean;
-    openMethod: "exec" | "url";
+    openMethod: OpenMethod;
     showFileContextMenuItem: boolean;
-    executeTemplate: string;
+    execVaultTemplate: string;
+    execFolderTemplate: string;
+    execFileTemplate: string;
+    urlVaultTemplate: string;
+    urlFolderTemplate: string;
+    urlFileTemplate: string;
     openFile: boolean;
-    urlProtocol: string;
-    workspacePath: string;
 }
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
     openMethod: "exec",
     showFileContextMenuItem: true,
-    executeTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
-    urlProtocol: "vscode",
+    execVaultTemplate: 'code "{{vaultpath}}"',
+    execFolderTemplate: 'code "{{vaultpath}}/{{folderpath}}"',
+    execFileTemplate: 'code "{{vaultpath}}" --goto "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}"',
+    urlVaultTemplate: "vscode://file/{{vaultpath}}",
+    urlFolderTemplate: "vscode://file/{{vaultpath}}/{{folderpath}}",
+    urlFileTemplate: "vscode://file/{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}",
     openFile: true,
-    workspacePath: "{{vaultpath}}",
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
@@ -30,26 +39,16 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     }
 
     override getSettingDefinitions(): SettingDefinitionItem<keyof OpenVSCodeSettings>[] {
-        // TODO: use appendChild instead?
-        const executeDescription = document.createDocumentFragment();
-        executeDescription.append(
+        const templatesDescription = document.createDocumentFragment();
+        templatesDescription.append(
             createEl("p", {
                 text: "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'.",
             }),
-            createEl("p", { text: `Default: ${DEFAULT_SETTINGS.executeTemplate}\n` }),
-            createEl("span", { text: "For common issues, see the relevant part of the readme " }),
-            createEl("a", {
-                text: "(link)",
-                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
-            }),
-            createEl("span", { text: "." }),
         );
-
-        const workspacePathDescription = document.createDocumentFragment();
-        workspacePathDescription.appendText(
-            `Default: ${DEFAULT_SETTINGS.workspacePath}. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace `,
-        );
-        workspacePathDescription
+        const workspaceDescription = createEl("p", {
+            text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
+        });
+        workspaceDescription
             .appendChild(
                 createEl("a", {
                     text: "(link)",
@@ -57,6 +56,17 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 }),
             )
             .appendText(".");
+        templatesDescription.append(workspaceDescription);
+
+        const executeDescription = document.createDocumentFragment();
+        executeDescription.append(
+            createEl("span", { text: "For common issues, see the relevant part of the readme " }),
+            createEl("a", {
+                text: "(link)",
+                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
+            }),
+            createEl("span", { text: "." }),
+        );
 
         return [
             /// 1. General settings
@@ -95,28 +105,59 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     defaultValue: DEFAULT_SETTINGS.showFileContextMenuItem,
                 },
             },
-            /// 2. Open via 'code' CLI command settings
+            {
+                name: "Templates",
+                desc: templatesDescription,
+            },
+            /// 2. Exec settings
             {
                 type: "group",
-                heading: "Open via 'code' CLI command",
+                heading: "Shell command settings",
                 items: [
                     {
-                        name: "Template for executing the 'code' command",
+                        // name is necessary to keep the description-only row visible without a render callback
+                        name: "Shell command help",
                         desc: executeDescription,
+                    },
+                    {
+                        name: "Vault command template",
+                        desc: `Default: ${DEFAULT_SETTINGS.execVaultTemplate}`,
                         control: {
                             type: "text",
-                            key: "executeTemplate",
-                            placeholder: DEFAULT_SETTINGS.executeTemplate,
-                            defaultValue: DEFAULT_SETTINGS.executeTemplate,
+                            key: "execVaultTemplate",
+                            placeholder: DEFAULT_SETTINGS.execVaultTemplate,
+                            defaultValue: DEFAULT_SETTINGS.execVaultTemplate,
+                            validate: (value: string) => this.validateInput(value, "Template"),
+                        },
+                    },
+                    {
+                        name: "Folder command template",
+                        desc: `Default: ${DEFAULT_SETTINGS.execFolderTemplate}`,
+                        control: {
+                            type: "text",
+                            key: "execFolderTemplate",
+                            placeholder: DEFAULT_SETTINGS.execFolderTemplate,
+                            defaultValue: DEFAULT_SETTINGS.execFolderTemplate,
+                            validate: (value: string) => this.validateInput(value, "Template"),
+                        },
+                    },
+                    {
+                        name: "File command template",
+                        desc: `Default: ${DEFAULT_SETTINGS.execFileTemplate}`,
+                        control: {
+                            type: "text",
+                            key: "execFileTemplate",
+                            placeholder: DEFAULT_SETTINGS.execFileTemplate,
+                            defaultValue: DEFAULT_SETTINGS.execFileTemplate,
                             validate: (value: string) => this.validateInput(value, "Template"),
                         },
                     },
                 ],
             },
-            /// 3. Open via 'vscode://' URL settings
+            /// 3. URL method settings
             {
                 type: "group",
-                heading: "Open via 'vscode://' URL",
+                heading: "URL method settings",
                 items: [
                     // description for the heading
                     {
@@ -135,8 +176,8 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     },
                     // settings
                     {
-                        name: "Open current file",
-                        desc: "Open the current file rather than the root of the vault.",
+                        name: "Open vault first",
+                        desc: "Open the vault before opening the selected file or folder.",
                         control: {
                             type: "toggle",
                             key: "openFile",
@@ -144,25 +185,36 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         },
                     },
                     {
-                        name: "Path to VS Code workspace",
-                        desc: workspacePathDescription,
+                        name: "Vault URL template",
+                        desc: `Default: ${DEFAULT_SETTINGS.urlVaultTemplate}`,
                         control: {
                             type: "text",
-                            key: "workspacePath",
-                            defaultValue: DEFAULT_SETTINGS.workspacePath,
-                            placeholder: DEFAULT_SETTINGS.workspacePath,
-                            validate: (value: string) => this.validateInput(value, "Path"),
+                            key: "urlVaultTemplate",
+                            placeholder: DEFAULT_SETTINGS.urlVaultTemplate,
+                            defaultValue: DEFAULT_SETTINGS.urlVaultTemplate,
+                            validate: (value: string) => this.validateInput(value, "Template"),
                         },
                     },
                     {
-                        name: "URL protocol",
-                        desc: `Default: ${DEFAULT_SETTINGS.urlProtocol}. You can override the default vscode:// to VS Code Insiders, VSCodium or other VS Code variants' protocol string`,
+                        name: "Folder URL template",
+                        desc: `Default: ${DEFAULT_SETTINGS.urlFolderTemplate}`,
                         control: {
                             type: "text",
-                            key: "urlProtocol",
-                            defaultValue: DEFAULT_SETTINGS.urlProtocol,
-                            placeholder: DEFAULT_SETTINGS.urlProtocol,
-                            validate: (value: string) => this.validateInput(value, "Protocol"),
+                            key: "urlFolderTemplate",
+                            placeholder: DEFAULT_SETTINGS.urlFolderTemplate,
+                            defaultValue: DEFAULT_SETTINGS.urlFolderTemplate,
+                            validate: (value: string) => this.validateInput(value, "Template"),
+                        },
+                    },
+                    {
+                        name: "File URL template",
+                        desc: `Default: ${DEFAULT_SETTINGS.urlFileTemplate}`,
+                        control: {
+                            type: "text",
+                            key: "urlFileTemplate",
+                            placeholder: DEFAULT_SETTINGS.urlFileTemplate,
+                            defaultValue: DEFAULT_SETTINGS.urlFileTemplate,
+                            validate: (value: string) => this.validateInput(value, "Template"),
                         },
                     },
                 ],

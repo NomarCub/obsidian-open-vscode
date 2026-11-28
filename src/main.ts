@@ -49,11 +49,35 @@ export default class OpenVSCode extends Plugin {
     async loadSettings(): Promise<void> {
         // migrate from before 2.0.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/TODO
         const savedSettings = (await this.loadData()) as
-            | (Partial<OpenVSCodeSettings> & { ribbonCommandUsesCode?: boolean })
+            | (Partial<OpenVSCodeSettings> & {
+                  ribbonCommandUsesCode?: boolean;
+                  executeTemplate?: string;
+                  urlProtocol?: string;
+                  workspacePath?: string;
+              })
             | null;
-        const { ribbonCommandUsesCode, ...settings } = savedSettings ?? {};
+        const { ribbonCommandUsesCode, executeTemplate, urlProtocol, workspacePath, ...settings } =
+            savedSettings ?? {};
+        const legacyExec = executeTemplate?.trim()
+            ? {
+                  execVaultTemplate: executeTemplate,
+                  execFolderTemplate: executeTemplate,
+                  execFileTemplate: executeTemplate,
+              }
+            : {};
+        const urlPrefix = `${(urlProtocol ?? "").trim() || "vscode"}://file/`;
+        const legacyUrl =
+            urlProtocol?.trim() || workspacePath?.trim()
+                ? {
+                      urlVaultTemplate: `${urlPrefix}${(workspacePath ?? "").trim() || "{{vaultpath}}"}`,
+                      urlFolderTemplate: `${urlPrefix}{{vaultpath}}/{{folderpath}}`,
+                      urlFileTemplate: `${urlPrefix}{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`,
+                  }
+                : {};
         this.settings = {
             ...DEFAULT_SETTINGS,
+            ...legacyExec,
+            ...legacyUrl,
             ...settings,
             openMethod: settings.openMethod ?? (ribbonCommandUsesCode === false ? "url" : "exec"),
         };
