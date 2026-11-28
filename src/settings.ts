@@ -8,26 +8,26 @@ export interface OpenVSCodeSettings {
     ribbonIcon: boolean;
     openMethod: OpenMethod;
     showFileContextMenuItem: boolean;
+    openFile: boolean;
     execVaultTemplate: string;
     execFolderTemplate: string;
     execFileTemplate: string;
     urlVaultTemplate: string;
     urlFolderTemplate: string;
     urlFileTemplate: string;
-    openFile: boolean;
 }
 
 export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
     openMethod: "exec",
     showFileContextMenuItem: true,
+    openFile: false,
     execVaultTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
     execFolderTemplate: 'code "{{vaultpath}}/{{folderpath}}"',
     execFileTemplate: 'code "{{vaultpath}}" --goto "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}"',
     urlVaultTemplate: "vscode://file/{{vaultpath}}",
     urlFolderTemplate: "vscode://file/{{vaultpath}}/{{folderpath}}",
     urlFileTemplate: "vscode://file/{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}",
-    openFile: true,
 };
 
 export class OpenVSCodeSettingsTab extends PluginSettingTab {
