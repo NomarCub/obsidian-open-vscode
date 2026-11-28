@@ -36,7 +36,7 @@ export default class OpenVSCode extends Plugin {
             id: "open-vscode",
             name: "Open vault with Visual Studio Code",
             callback: () => {
-                openVSCode(this);
+                openVSCode(this, { target: "Vault" });
             },
         });
 
@@ -91,7 +91,7 @@ export default class OpenVSCode extends Plugin {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
-                openVSCode(this);
+                openVSCode(this, { target: "Vault" });
             });
         }
     }
@@ -105,7 +105,7 @@ export default class OpenVSCode extends Plugin {
             item.setTitle("Open in VS Code")
                 .setIcon(OpenVSCode.iconId)
                 .onClick(() => {
-                    openVSCode(this, file);
+                    openVSCode(this, { file });
                 });
         });
     }

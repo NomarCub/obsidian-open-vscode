@@ -12,29 +12,32 @@ import {
 import type {} from "obsidian-typings";
 import { DEFAULT_SETTINGS, type OpenTarget, type OpenVSCodeSettings } from "./settings.ts";
 
-interface VSCodeContext {
+interface ObsidianContext {
     app: App;
     settings: OpenVSCodeSettings;
     manifest: Pick<PluginManifest, "id" | "name">;
 }
 
 export function openVSCode(
-    { app, settings, manifest }: VSCodeContext,
-    file: TAbstractFile | null = app.workspace.getActiveFile(),
+    { app, settings, manifest }: ObsidianContext,
+    { target, file }: { target?: OpenTarget; file?: TAbstractFile | null } = {},
 ): void {
     if (!(app.vault.adapter instanceof FileSystemAdapter)) {
         return;
     }
 
+    file ??= app.workspace.getActiveFile();
+
     const vaultPath = app.vault.adapter.getBasePath();
     const filePath = file?.path ?? "";
     const folderPath = file instanceof TFolder ? file.path : (file?.parent?.path ?? "");
-    const target: OpenTarget =
-        !file || (file instanceof TFolder && file.isRoot())
+    const openTarget =
+        target ??
+        (!file || (file instanceof TFolder && file.isRoot())
             ? "Vault"
             : file instanceof TFolder
               ? "Folder"
-              : "File";
+              : "File");
 
     // only reuse the active note's cursor when opening that same note
     const cursor =
@@ -60,7 +63,7 @@ export function openVSCode(
             .replaceAll("{{line}}", line.toString())
             .replaceAll("{{ch}}", ch.toString());
     // combine method and target to address the flat settings, `as const` preserves valid key types
-    const templateKey = `${settings.openMethod}${target}Template` as const;
+    const templateKey = `${settings.openMethod}${openTarget}Template` as const;
     const template = settings[templateKey].trim() || DEFAULT_SETTINGS[templateKey];
 
     if (settings.openMethod === "exec") {
@@ -69,12 +72,12 @@ export function openVSCode(
         const vaultTemplate = settings.urlVaultTemplate.trim() || DEFAULT_SETTINGS.urlVaultTemplate;
         openVSCodeUrl(
             renderTemplate(template),
-            settings.openFile && target !== "Vault" ? renderTemplate(vaultTemplate) : undefined,
+            settings.openFile ? renderTemplate(vaultTemplate) : undefined,
         );
     }
 }
 
-function openVSCodeExec({ app, manifest }: VSCodeContext, executeTemplate: string, command: string): void {
+function openVSCodeExec({ app, manifest }: ObsidianContext, executeTemplate: string, command: string): void {
     const runCommand = (): void => {
         exec(command, (error) => {
             if (error) {
@@ -140,27 +143,24 @@ function openVSCodeExec({ app, manifest }: VSCodeContext, executeTemplate: strin
 }
 
 // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-function openVSCodeUrl(url: string, workspaceUrl?: string): void {
-    if (workspaceUrl) {
-        /*
-            By default, opening a file via the vscode:// URL will cause that file to open
-            in the front-most window in VS Code. We assume that it is preferred that files from
-            Obsidian should all open in the same workspace.
+function openVSCodeUrl(url: string, vaultUrl?: string): void {
+    /*
+       By default, opening a file via the vscode:// URL will cause that file to open
+       in the front-most window in VS Code. We assume that it is preferred, that files from
+       Obsidian should all open in the same workspace.
 
-            As a workaround, we issue two open requests to VS Code in quick succession: the first to
-            bring the workspace to front, the second to open the file.
+       As a hacky workaround, we issue two open requests to VS Code in quick succession:
+       the first to bring the workspace to front, the second to open the file.
 
-            There is a ticket requesting this feature for VS Code:
-            https://github.com/microsoft/vscode/issues/150078
-            */
+       There is a (closed) ticket requesting this feature for VS Code: https://github.com/microsoft/vscode/issues/150078.
+    */
+    if (vaultUrl) {
+        // 1. open the workspace to bring the correct window to the front
+        window.open(vaultUrl);
 
-        // HACK: first open the _workspace_ to bring the correct window to the front....
-        window.open(workspaceUrl);
-
-        // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
-        setTimeout(() => {
-            window.open(url);
-        }, 200); // anecdotally, this seems to be the min required for the workspace to activate
+        // 2. open the file after a timeout to allow time for the workspace to be activated
+        // anecdotally, 200ms seems to be the min required for the workspace to activate
+        setTimeout(() => window.open(url), 200);
     } else {
         window.open(url);
     }

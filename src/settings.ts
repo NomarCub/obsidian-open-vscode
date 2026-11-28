@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: OpenVSCodeSettings = {
     ribbonIcon: true,
     openMethod: "exec",
     showFileContextMenuItem: true,
-    execVaultTemplate: 'code "{{vaultpath}}"',
+    execVaultTemplate: 'code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"',
     execFolderTemplate: 'code "{{vaultpath}}/{{folderpath}}"',
     execFileTemplate: 'code "{{vaultpath}}" --goto "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}"',
     urlVaultTemplate: "vscode://file/{{vaultpath}}",
@@ -36,6 +36,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     constructor(app: App, plugin: OpenVSCode) {
         super(app, plugin);
         this.plugin = plugin;
+    }
+
+    validateInput(input: string, fieldName: string): string | undefined {
+        if (/^\s/.exec(input) || /\s$/.exec(input)) {
+            return `${fieldName} should not begin or end with whitespace`;
+        } else if (input === "") {
+            return `${fieldName} should not be empty`;
+        }
+        return undefined;
     }
 
     override getSettingDefinitions(): SettingDefinitionItem<keyof OpenVSCodeSettings>[] {
@@ -220,14 +229,5 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 ],
             },
         ];
-    }
-
-    validateInput(input: string, fieldName: string): string | undefined {
-        if (/^\s/.exec(input) || /\s$/.exec(input)) {
-            return `${fieldName} should not begin or end with whitespace`;
-        } else if (input === "") {
-            return `${fieldName} should not be empty`;
-        }
-        return undefined;
     }
 }
