@@ -48,25 +48,6 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     }
 
     override getSettingDefinitions(): SettingDefinitionItem<keyof OpenVSCodeSettings>[] {
-        const templatesDescription = document.createDocumentFragment();
-        templatesDescription.append(
-            createEl("p", {
-                text: "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'.",
-            }),
-        );
-        const workspaceDescription = createEl("p", {
-            text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
-        });
-        workspaceDescription
-            .appendChild(
-                createEl("a", {
-                    text: "(link)",
-                    href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
-                }),
-            )
-            .appendText(".");
-        templatesDescription.append(workspaceDescription);
-
         const executeDescription = document.createDocumentFragment();
         executeDescription.append(
             createEl("span", { text: "For common issues, see the relevant part of the readme " }),
@@ -116,7 +97,25 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
             },
             {
                 name: "Templates",
-                desc: templatesDescription,
+                desc: createFragment((fragment) => {
+                    fragment.createEl("p", {
+                        text: "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'.",
+                    });
+                    fragment.createEl(
+                        "p",
+                        {
+                            text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
+                        },
+                        (paragraph) =>
+                            paragraph.append(
+                                createEl("a", {
+                                    text: "(link)",
+                                    href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
+                                }),
+                                ".",
+                            ),
+                    );
+                }),
             },
             /// 2. Exec settings
             {
