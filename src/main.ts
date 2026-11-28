@@ -47,7 +47,7 @@ export default class OpenVSCode extends Plugin {
     }
 
     async loadSettings(): Promise<void> {
-        // migrate from before 2.0.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/TODO
+        // migrate from before 2.0.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/38
         const savedSettings = (await this.loadData()) as
             | (Partial<OpenVSCodeSettings> & {
                   ribbonCommandUsesCode?: boolean;
