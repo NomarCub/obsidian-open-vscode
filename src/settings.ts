@@ -88,21 +88,14 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     fragment.createEl("p", {
                         text: "You can use the following variables: '{{vaultpath}}' (absolute), '{{filepath}}' (relative), '{{folderpath}}' (relative), '{{line}}' and '{{ch}}'.",
                     });
-                    fragment.createEl(
-                        "p",
-                        {
-                            text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
-                        },
-                        (paragraph) => {
-                            paragraph.append(
-                                createEl("a", {
-                                    text: "(link)",
-                                    href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
-                                }),
-                                ".",
-                            );
-                        },
-                    );
+                    const paragraph = fragment.createEl("p", {
+                        text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
+                    });
+                    paragraph.createEl("a", {
+                        text: "(link)",
+                        href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
+                    });
+                    paragraph.append(".");
                 }),
             },
             /// 2. Exec settings
@@ -114,16 +107,12 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         // name is necessary to keep the description-only row visible without a render callback
                         name: "Shell command help",
                         desc: createFragment((fragment) => {
-                            fragment.append(
-                                createEl("span", {
-                                    text: "For common issues, see the relevant part of the readme ",
-                                }),
-                                createEl("a", {
-                                    text: "(link)",
-                                    href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
-                                }),
-                                createEl("span", { text: "." }),
-                            );
+                            fragment.append("For common issues, see the relevant part of the readme ");
+                            fragment.createEl("a", {
+                                text: "(link)",
+                                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
+                            });
+                            fragment.append(".");
                         }),
                     },
                     {
@@ -168,18 +157,14 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                 items: [
                     // description for the heading
                     {
-                        name: "",
-                        render: (setting) => {
-                            const description = createEl("p", { text: "See: " });
-                            description.appendChild(
-                                createEl("a", {
-                                    text: "Opening VS Code with URLs",
-                                    href: "https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls",
-                                }),
-                            );
-
-                            setting.controlEl.append(description);
-                        },
+                        name: "URL help",
+                        desc: createFragment((fragment) => {
+                            fragment.append("See: ");
+                            fragment.createEl("a", {
+                                text: "Opening VS Code with URLs",
+                                href: "https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls",
+                            });
+                        }),
                     },
                     // settings
                     {
