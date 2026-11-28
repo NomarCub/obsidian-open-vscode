@@ -107,12 +107,14 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         // name is necessary to keep the description-only row visible without a render callback
                         name: "Shell command help",
                         desc: createFragment((fragment) => {
-                            fragment.append("See VS Code's core CLI options: ");
-                            fragment.createEl("a", {
+                            const paragraph = fragment.createEl("p", {
+                                text: "See VS Code's core CLI options: ",
+                            });
+                            paragraph.createEl("a", {
                                 text: "link",
                                 href: "https://code.visualstudio.com/docs/configure/command-line#_core-cli-options",
                             });
-                            fragment.append(".");
+                            paragraph.append(".");
                             fragment.append("For common issues, see the relevant part of the readme ");
                             fragment.createEl("a", {
                                 text: "(plugin help link)",
