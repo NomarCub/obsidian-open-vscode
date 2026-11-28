@@ -78,12 +78,12 @@ function openVSCodeExec({ app, manifest }: VSCodeContext, executeTemplate: strin
     const runCommand = (): void => {
         exec(command, (error) => {
             if (error) {
-                new Notice(
-                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
-                );
                 console.error(
                     `[${manifest.id}] exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
                     error,
+                );
+                new Notice(
+                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
                 );
             }
         });
