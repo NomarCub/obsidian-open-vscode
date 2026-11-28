@@ -27,7 +27,7 @@ export default defineConfig([
             "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
             "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
             "@typescript-eslint/no-non-null-assertion": "off",
-            // TODO(75): re-enable
+            // TODO(#34): re-enable
             "eslint-comments/no-restricted-disable": "off",
             "eslint-comments/require-description": "off",
             "obsidianmd/prefer-create-el": "off",
