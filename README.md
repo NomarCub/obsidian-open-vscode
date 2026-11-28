@@ -55,7 +55,7 @@ See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.co
 ### Settings for `open-vscode-via-url`
 
 On some systems, this may be faster than using the `child_process` approach.  
-See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
+See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls).  
 The first time you use the URL method for opening, VS Code displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 - **Open current file**

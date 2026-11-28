@@ -142,7 +142,7 @@ function openVSCodeExec({ app, manifest }: ObsidianContext, executeTemplate: str
     }
 }
 
-// https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
+// https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls
 function openVSCodeUrl(url: string, vaultUrl?: string): void {
     /*
        By default, opening a file via the vscode:// URL will cause that file to open
