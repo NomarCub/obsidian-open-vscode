@@ -107,20 +107,20 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         // name is necessary to keep the description-only row visible without a render callback
                         name: "Shell command help",
                         desc: createFragment((fragment) => {
-                            const paragraph = fragment.createEl("p", {
-                                text: "See VS Code's core CLI options: ",
-                            });
-                            paragraph.createEl("a", {
-                                text: "link",
-                                href: "https://code.visualstudio.com/docs/configure/command-line#_core-cli-options",
-                            });
-                            paragraph.append(".");
-                            fragment.append("For common issues, see the relevant part of the readme ");
-                            fragment.createEl("a", {
-                                text: "(plugin help link)",
-                                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
-                            });
-                            fragment.append(".");
+                            fragment.createEl("p", { text: "See VS Code's core CLI options: " }).append(
+                                createEl("a", {
+                                    text: "link",
+                                    href: "https://code.visualstudio.com/docs/configure/command-line#_core-cli-options",
+                                }),
+                                ".",
+                            );
+                            fragment.createEl("p", { text: "For common issues, see the relevant part of the readme " }).append(
+                                createEl("a", {
+                                    text: "(plugin help link)",
+                                    href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
+                                }),
+                                ".",
+                            );
                         }),
                     },
                     {
