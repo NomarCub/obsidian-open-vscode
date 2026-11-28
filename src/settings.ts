@@ -48,16 +48,6 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
     }
 
     override getSettingDefinitions(): SettingDefinitionItem<keyof OpenVSCodeSettings>[] {
-        const executeDescription = document.createDocumentFragment();
-        executeDescription.append(
-            createEl("span", { text: "For common issues, see the relevant part of the readme " }),
-            createEl("a", {
-                text: "(link)",
-                href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
-            }),
-            createEl("span", { text: "." }),
-        );
-
         return [
             /// 1. General settings
             {
@@ -106,14 +96,15 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                         {
                             text: 'In a vault template, you can replace "{{vaultpath}}" with an absolute path to a ".code-workspace" file if you prefer to use a multi-root workspace ',
                         },
-                        (paragraph) =>
+                        (paragraph) => {
                             paragraph.append(
                                 createEl("a", {
                                     text: "(link)",
                                     href: "https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces",
                                 }),
                                 ".",
-                            ),
+                            );
+                        },
                     );
                 }),
             },
@@ -125,7 +116,18 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     {
                         // name is necessary to keep the description-only row visible without a render callback
                         name: "Shell command help",
-                        desc: executeDescription,
+                        desc: createFragment((fragment) => {
+                            fragment.append(
+                                createEl("span", {
+                                    text: "For common issues, see the relevant part of the readme ",
+                                }),
+                                createEl("a", {
+                                    text: "(link)",
+                                    href: "https://github.com/NomarCub/obsidian-open-vscode#prerequisites",
+                                }),
+                                createEl("span", { text: "." }),
+                            );
+                        }),
                     },
                     {
                         name: "Vault command template",
