@@ -1,16 +1,8 @@
-import { exec } from "child_process";
-import {
-    addIcon,
-    FileSystemAdapter,
-    MarkdownView,
-    type Menu,
-    Notice,
-    Plugin,
-    type TAbstractFile,
-} from "obsidian";
+import { addIcon, type Menu, Plugin, type TAbstractFile } from "obsidian";
 import type {} from "obsidian-typings";
 import { registerNotebookNavigatorMenus } from "./notebook-navigator.ts";
 import { DEFAULT_SETTINGS, type OpenVSCodeSettings, OpenVSCodeSettingsTab } from "./settings.ts";
+import { openVSCode } from "./vsCodeUtils.ts";
 
 export default class OpenVSCode extends Plugin {
     static iconId = "vscode-logo";
@@ -32,8 +24,6 @@ export default class OpenVSCode extends Plugin {
     ribbonIcon?: HTMLElement;
     override settings!: OpenVSCodeSettings;
 
-    readonly logTag = `[${this.manifest.id}]`;
-
     override async onload(): Promise<void> {
         addIcon(OpenVSCode.iconId, OpenVSCode.iconSvgContent);
         await this.loadSettings();
@@ -44,15 +34,10 @@ export default class OpenVSCode extends Plugin {
         this.addCommand({
             // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
             id: "open-vscode",
-            name: "Open as Visual Studio Code workspace",
-            callback: this.openVSCode.bind(this),
-        });
-
-        this.addCommand({
-            // eslint-disable-next-line obsidianmd/commands/no-plugin-id-in-command-id
-            id: "open-vscode-via-url",
-            name: "Open as Visual Studio Code workspace using a vscode:// URL",
-            callback: this.openVSCodeUrl.bind(this),
+            name: "Open vault with Visual Studio Code",
+            callback: () => {
+                openVSCode(this, { target: "Vault" });
+            },
         });
 
         this.registerEvent(this.app.workspace.on("file-menu", this.fileMenuHandler.bind(this)));
@@ -61,82 +46,41 @@ export default class OpenVSCode extends Plugin {
         registerNotebookNavigatorMenus(this, OpenVSCode.iconId);
     }
 
-    openVSCode(file: TAbstractFile | null = this.app.workspace.getActiveFile()): void {
-        if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
-            return;
-        }
-
-        const vaultPath = this.app.vault.adapter.getBasePath();
-        const filePath = file?.path ?? "";
-        const folderPath = file?.parent?.path ?? "";
-
-        const cursor = this.app.workspace.getActiveViewOfType(MarkdownView)?.editor.getCursor();
-        // VS Code line and column are 1-based
-        const line = (cursor?.line ?? 0) + 1;
-        const ch = (cursor?.ch ?? 0) + 1;
-
-        const executeTemplate = this.settings.executeTemplate.trim() || DEFAULT_SETTINGS.executeTemplate;
-        const command = executeTemplate
-            .replaceAll("{{vaultpath}}", vaultPath)
-            .replaceAll("{{filepath}}", filePath)
-            .replaceAll("{{folderpath}}", folderPath)
-            .replaceAll("{{line}}", line.toString())
-            .replaceAll("{{ch}}", ch.toString());
-
-        exec(command, (error) => {
-            if (error) {
-                new Notice(
-                    "Failed to launch VS Code. Check the plugin's settings and your logs for more details.",
-                );
-                console.error(
-                    `${this.logTag} exec error.\n\ttemplate: ${executeTemplate}\n\tcommand: ${command}\n`,
-                    error,
-                );
-            }
-        });
-    }
-
-    // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
-    openVSCodeUrl(): void {
-        if (!(this.app.vault.adapter instanceof FileSystemAdapter)) {
-            return;
-        }
-
-        const path = this.app.vault.adapter.getBasePath();
-        const file = this.app.workspace.getActiveFile();
-        const filePath = file?.path ?? "";
-
-        let url = `${this.settings.urlProtocol}://file/${path}`;
-
-        if (this.settings.openFile) {
-            url += `/${filePath}`;
-            /*
-            By default, opening a file via the vscode:// URL will cause that file to open
-            in the front-most window in VS Code. We assume that it is preferred that files from
-            Obsidian should all open in the same workspace.
-
-            As a workaround, we issue two open requests to VS Code in quick succession: the first to
-            bring the workspace to front, the second to open the file.
-
-            There is a ticket requesting this feature for VS Code:
-            https://github.com/microsoft/vscode/issues/150078
-            */
-
-            // HACK: first open the _workspace_ to bring the correct window to the front....
-            const workspacePath = this.settings.workspacePath.replaceAll("{{vaultpath}}", path);
-            window.open(`${this.settings.urlProtocol}://file/${workspacePath}`);
-
-            // ...then open the _file_ in a setTimeout callback to allow time for the workspace to be activated
-            setTimeout(() => {
-                window.open(url);
-            }, 200); // anecdotally, this seems to be the min required for the workspace to activate
-        } else {
-            window.open(url);
-        }
-    }
-
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        // migrate from before 2.0.0, see: https://github.com/NomarCub/obsidian-open-vscode/pull/38
+        const savedSettings = (await this.loadData()) as
+            | (Partial<OpenVSCodeSettings> & {
+                  ribbonCommandUsesCode?: boolean;
+                  executeTemplate?: string;
+                  urlProtocol?: string;
+                  workspacePath?: string;
+              })
+            | null;
+        const { ribbonCommandUsesCode, executeTemplate, urlProtocol, workspacePath, ...settings } =
+            savedSettings ?? {};
+        const legacyExec = executeTemplate?.trim()
+            ? {
+                  execVaultTemplate: executeTemplate,
+                  execFolderTemplate: executeTemplate,
+                  execFileTemplate: executeTemplate,
+              }
+            : {};
+        const urlPrefix = `${(urlProtocol ?? "").trim() || "vscode"}://file/`;
+        const legacyUrl =
+            urlProtocol?.trim() || workspacePath?.trim()
+                ? {
+                      urlVaultTemplate: `${urlPrefix}${(workspacePath ?? "").trim() || "{{vaultpath}}"}`,
+                      urlFolderTemplate: `${urlPrefix}{{vaultpath}}/{{folderpath}}`,
+                      urlFileTemplate: `${urlPrefix}{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`,
+                  }
+                : {};
+        this.settings = {
+            ...DEFAULT_SETTINGS,
+            ...legacyExec,
+            ...legacyUrl,
+            ...settings,
+            openMethod: settings.openMethod ?? (ribbonCommandUsesCode === false ? "url" : "exec"),
+        };
     }
 
     async saveSettings(settings: OpenVSCodeSettings = this.settings): Promise<void> {
@@ -147,11 +91,7 @@ export default class OpenVSCode extends Plugin {
         this.ribbonIcon?.remove();
         if (this.settings.ribbonIcon) {
             this.ribbonIcon = this.addRibbonIcon(OpenVSCode.iconId, "VS Code", () => {
-                if (this.settings.ribbonCommandUsesCode) {
-                    this.openVSCode();
-                } else {
-                    this.openVSCodeUrl();
-                }
+                openVSCode(this, { target: "Vault" });
             });
         }
     }
@@ -165,7 +105,7 @@ export default class OpenVSCode extends Plugin {
             item.setTitle("Open in VS Code")
                 .setIcon(OpenVSCode.iconId)
                 .onClick(() => {
-                    this.openVSCode(file);
+                    openVSCode(this, { file });
                 });
         });
     }

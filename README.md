@@ -25,7 +25,7 @@ You can also use it as a command and assign hotkeys to it. You can disable the r
 
 ## Prerequisites
 
-For the default method of opening VS Code, you need to be able to launch VS Code from the command line.  
+For the default method of opening VS Code, you need to be able to launch VS Code from the command line.
 
 - Either the `code` command needs to be on your path. Most VS Code installers handle this.
   - Special steps needed for macOS: [Visual Studio Code on macOS > Launch from the command line](https://code.visualstudio.com/docs/setup/mac#_launch-vs-code-from-the-command-line)
@@ -44,18 +44,18 @@ For the alternative `open-vscode-via-url` method, your system needs to have alre
 
 ### Template for executing the `code` command
 
-You can template the command opening VS Code however you like with its [provided command line arguments](https://code.visualstudio.com/docs/editor/command-line). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
+You can template the command opening VS Code however you like with its [provided command line arguments](https://code.visualstudio.com/docs/configure/command-line#_core-cli-options). This way you can technically launch any command you set, so take caution. Potential use cases include opening workspaces with `.code-workspace` files (e.g. for Dendron), opening specific files, folders, etc.
 
 You can use the following variables: `{{vaultpath}}` (absolute), `{{filepath}}` (relative), `{{folderpath}}` (relative), `{{line}}` and `{{ch}}`.
 The default template is `code "{{vaultpath}}" "{{vaultpath}}/{{filepath}}"`, which opens the current file (if there is one) in the workspace that is the vault's root folder. This gets expanded to be executed in your shell as `code "C:\Users\YourUser\Documents\vault" "C:\Users\YourUser\Documents\vault/Note.md"`, for example.
 
 If you want to jump to the line (and character), you can use `code -g "{{vaultpath}}" "{{vaultpath}}/{{filepath}}:{{line}}:{{ch}}`.  
-See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.com/docs/editor/command-line#_opening-files-and-folders).
+See also: [VS Code CLI - Opening Files and Folders](https://code.visualstudio.com/docs/configure/command-line#_opening-files-and-folders).
 
 ### Settings for `open-vscode-via-url`
 
 On some systems, this may be faster than using the `child_process` approach.  
-See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls).  
+See: [Opening VS Code with URLs](https://code.visualstudio.com/docs/configure/command-line#_opening-vs-code-with-urls).  
 The first time you use the URL method for opening, VS Code displays a confirmation dialog (that you just can hit enter on) for security reasons.
 
 - **Open current file**
@@ -64,7 +64,7 @@ The first time you use the URL method for opening, VS Code displays a confirmati
 
 - **Path to VS Code Workspace**
 
-  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editor/workspaces#_multiroot-workspaces).
+  Defaults to the `{{vaultpath}}` template variable. You can set this to an absolute path to a ".code-workspace" file if you prefer to use a [multi-root workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces#_multi-root-workspaces).
 
 - **URL protocol**
 
@@ -86,11 +86,14 @@ You can also install the plugin manually by copying a release to your `.obsidian
 ## Development
 
 This plugin follows the structure of the [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin), see further details there.  
-Contributions are welcome.
 
-If [pjeby/hot-reload](https://github.com/pjeby/hot-reload) is installed,
-activated, and open-vscode is registered with hot-reload, then extra logging
-and DX commands to refresh settings are activated.
+### Contributing
+
+Contributions are welcome, with or without a software development background!
+
+Consider first opening an issue describing your problem or proposal *before* opening a pull request with code changes.
+
+LLM usage for contributions is allowed, but disclosure is mandatory. Using LLMs directly is forbidden for text that people will read, including issue or PR descriptions or text in the plugin. (Inspired by the [Rust LLM usage policy](https://forge.rust-lang.org/policies/llm-usage.html#summary)).
 
 ## Credits
 
