@@ -70,10 +70,7 @@ export class OpenVSCodeSettingsTab extends PluginSettingTab {
                     type: "dropdown",
                     key: "openMethod",
                     defaultValue: DEFAULT_SETTINGS.openMethod,
-                    options: {
-                        exec: "Shell command",
-                        url: "URL",
-                    },
+                    options: { exec: "Shell command", url: "URL" },
                 },
             },
             {
