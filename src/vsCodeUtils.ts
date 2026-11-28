@@ -69,11 +69,19 @@ export function openVSCode(
     if (settings.openMethod === "exec") {
         openVSCodeExec({ app, settings, manifest }, template, renderTemplate(template));
     } else {
-        const vaultTemplate = settings.urlVaultTemplate.trim() || DEFAULT_SETTINGS.urlVaultTemplate;
-        openVSCodeUrl(
-            renderTemplate(template),
-            settings.openFile ? renderTemplate(vaultTemplate) : undefined,
-        );
+        if (!settings.openFile) {
+            openVSCodeUrl(renderTemplate(template));
+        } else {
+            if (openTarget === "Folder") {
+                openVSCodeUrl(renderTemplate(template));
+            } else {
+                // when openFile is set, the only thing that makes sense is to open the vault, then the file
+                openVSCodeUrl(
+                    renderTemplate(settings.urlFileTemplate.trim() || DEFAULT_SETTINGS.urlFileTemplate),
+                    renderTemplate(settings.urlVaultTemplate.trim() || DEFAULT_SETTINGS.urlVaultTemplate),
+                );
+            }
+        }
     }
 }
 
